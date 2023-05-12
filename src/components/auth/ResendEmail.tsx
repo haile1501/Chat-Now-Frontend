@@ -1,6 +1,7 @@
 "use client";
 import { Typography, Box, Grid, Link } from "@mui/material";
 import { useState, useEffect } from "react";
+import { resendEmail } from "@/api";
 
 const ResendEmail = ({ email }: { email: string }) => {
   const [seconds, setSeconds] = useState(60);
@@ -8,7 +9,13 @@ const ResendEmail = ({ email }: { email: string }) => {
 
   const handleClick = () => {
     if (!isButtonDisabled) {
-      setIsButtonDisabled(true);
+      resendEmail(email)
+        .then((res) => {
+          setIsButtonDisabled(true);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 

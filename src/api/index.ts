@@ -11,7 +11,7 @@ export interface SignUpBody {
 }
 
 export const signUp = (body: SignUpBody) => {
-  return axios.post(`${BASE_API_URL}/user/sign-up`, body);
+  return axios.post(`${BASE_API_URL}/auth/sign-up`, body);
 };
 
 export interface SignInBody {
@@ -24,5 +24,9 @@ export const signIn = (body: SignInBody) => {
 };
 
 export const resendEmail = (email: string) => {
-  return axios.post;
+  return axios.post(`${BASE_API_URL}/auth/resend-email`, { email });
+};
+
+export const verifyEmail = (email: any, otp: any) => {
+  return axios.post(`${BASE_API_URL}/auth/verify-email`, { email, otp });
 };

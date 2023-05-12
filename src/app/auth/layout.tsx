@@ -50,7 +50,7 @@ export default function AuthLayout({
             <Box
               sx={{
                 my: 8,
-                mx: 25,
+                mx: 20,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",

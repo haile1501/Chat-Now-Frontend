@@ -19,7 +19,7 @@ const UnVerifiedAccount = ({ email }: { email: string }) => {
   return (
     <Box sx={{ p: 3, mt: 2 }}>
       <Typography>
-        We will send an email to{" "}
+        Your account is not yet activated. We has sent a verification email to{" "}
         <Box component="span" fontWeight="bold">
           {email}
         </Box>
