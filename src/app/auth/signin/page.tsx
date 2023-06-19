@@ -72,7 +72,7 @@ const SignInForm = ({
     if (!isNotOK) {
       signIn(signInBody)
         .then((res: AxiosResponse) => {
-          alert(res.data);
+          localStorage.removeItem("accessToken");
           localStorage.setItem("accessToken", res.data);
           setIsLoading(false);
           router.push("/dashboard");
