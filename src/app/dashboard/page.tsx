@@ -17,8 +17,9 @@ import Calls from "@/components/dashboard/calls/Calls";
 import Friends from "@/components/dashboard/friends/Friends";
 import MainChat from "@/components/dashboard/chats/MainChat";
 import { IConversation } from "@/interfaces/Conversation";
-import { getConversations } from "@/api";
+import { getConversations } from "@/api/chat";
 import NoConversation from "@/components/dashboard/chats/NoConversation";
+import io, { Socket } from "socket.io-client";
 
 const DashBoard = () => {
   const router = useRouter();
@@ -27,6 +28,7 @@ const DashBoard = () => {
   const [conversationsList, setConversationsList] = useState<IConversation[]>(
     []
   );
+  const [socket, setSocket] = useState<Socket>();
 
   useEffect(() => {
     if (localStorage.getItem(ACCESS_TOKEN)) {
@@ -38,11 +40,19 @@ const DashBoard = () => {
   useEffect(() => {
     const accessToken = localStorage.getItem(ACCESS_TOKEN);
     if (accessToken) {
+      const socketInstance = io("http://localhost:3001", {
+        extraHeaders: {
+          token: accessToken,
+        },
+      });
+
       getConversations(accessToken)
         .then((res) => {
           if (res?.length) {
+            socketInstance.emit("join", { conversationId: res[0].id });
             setSelectedConversation(res[0].id);
             setConversationsList(res);
+            setSocket(socketInstance);
           }
         })
         .catch((err) => console.log(err));
@@ -136,6 +146,7 @@ const DashBoard = () => {
             setSelectedConversation={setSelectedConversation}
             selectedConversation={selectedConversation}
             conversationsList={conversationsList}
+            socket={socket}
           />
         )}
         {selectedItem === "friend" && <Friends />}
@@ -146,7 +157,11 @@ const DashBoard = () => {
         {conversationsList.map((conversation) => {
           if (conversation.id === selectedConversation) {
             return (
-              <MainChat conversation={conversation} key={conversation.id} />
+              <MainChat
+                conversation={conversation}
+                key={conversation.id}
+                socket={socket}
+              />
             );
           }
         })}

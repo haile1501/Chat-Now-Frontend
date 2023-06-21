@@ -41,7 +41,7 @@ const Conversation = ({
       >
         <Typography
           sx={{
-            fontSize: "1.05rem",
+            fontSize: "1.15rem",
             fontWeight: "bold",
             color: isSelected ? "#ffffff" : "black",
           }}
@@ -49,7 +49,7 @@ const Conversation = ({
           {conversation.conversationName}
         </Typography>
         <Typography
-          sx={{ fontSize: "0.85rem", color: isSelected ? "#ffffff" : "black" }}
+          sx={{ fontSize: "1rem", color: isSelected ? "#ffffff" : "black" }}
         >
           {conversation.isMyLastMessage
             ? `You: ${conversation.lastMessage}`

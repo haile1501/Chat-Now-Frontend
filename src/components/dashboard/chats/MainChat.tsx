@@ -9,32 +9,18 @@ import { useEffect, useRef, useState } from "react";
 import telegram from "../../../../public/TelegramLogo.svg";
 import { IMessage } from "@/interfaces/Message";
 import Message from "./Message";
+import { Socket } from "socket.io-client";
+import { getMessagesList } from "@/api/chat";
 
-const MainChat = ({ conversation }: { conversation: IConversation }) => {
+const MainChat = ({
+  conversation,
+  socket,
+}: {
+  conversation: IConversation;
+  socket: Socket | undefined;
+}) => {
   const [messageText, setMessageText] = useState("");
-  const [messagesList, setMessagesList] = useState<IMessage[]>([
-    {
-      content: "abc",
-      firstName: "bcd",
-      lastName: "abd",
-      avatar: "abc",
-      isMine: false,
-    },
-    {
-      content: "asabc",
-      firstName: "bcd",
-      lastName: "abd",
-      avatar: "abc",
-      isMine: false,
-    },
-    {
-      content: "aaaabc",
-      firstName: "bcd",
-      lastName: "abd",
-      avatar: "abc",
-      isMine: false,
-    },
-  ]);
+  const [messagesList, setMessagesList] = useState<IMessage[]>([]);
   const containerRef = useRef<HTMLElement>(null);
 
   const handleMessageChange = (event: any) => {
@@ -58,13 +44,51 @@ const MainChat = ({ conversation }: { conversation: IConversation }) => {
         isMine: true,
         lastName: null,
         firstName: null,
-        avatar: null,
+        avatar: "",
       };
 
-      setMessagesList([...messagesList, message]);
+      socket?.emit("send", {
+        conversationId: conversation.id,
+        content: messageText,
+      });
+      setMessagesList((prevMessagesList) => [...prevMessagesList, message]);
       setMessageText("");
     }
   };
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      getMessagesList(conversation.id, accessToken)
+        .then((messagesList) => {
+          if (messagesList?.length) {
+            setMessagesList(messagesList);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [getMessagesList]);
+
+  useEffect(() => {
+    function handleMessageReceive(messageData: any) {
+      if (messageData.conversation.conversationId === conversation.id) {
+        const message: IMessage = {
+          content: messageData.content,
+          firstName: messageData.user.firstName,
+          lastName: messageData.user.lastName,
+          avatar: messageData.user.avatar,
+          isMine: false,
+        };
+        setMessagesList((prevMessagesList) => [...prevMessagesList, message]);
+      }
+    }
+
+    socket?.on("receive", handleMessageReceive);
+
+    return () => {
+      socket?.off("receive", handleMessageReceive);
+    };
+  }, [setMessagesList, socket]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -108,7 +132,7 @@ const MainChat = ({ conversation }: { conversation: IConversation }) => {
         >
           <Typography
             sx={{
-              fontSize: "1.05rem",
+              fontSize: "1.15rem",
               fontWeight: "bold",
             }}
           >
@@ -116,7 +140,7 @@ const MainChat = ({ conversation }: { conversation: IConversation }) => {
           </Typography>
           <Typography
             sx={{
-              fontSize: "0.85rem",
+              fontSize: "1rem",
             }}
           >
             Online
@@ -151,8 +175,8 @@ const MainChat = ({ conversation }: { conversation: IConversation }) => {
         </Box>
       </Box>
       <Box sx={{ overflowY: "auto", height: "46rem" }} ref={containerRef}>
-        {messagesList.map((message) => (
-          <Message message={message} key={message.content} />
+        {messagesList.map((message, index) => (
+          <Message message={message} key={index} />
         ))}
       </Box>
       <Box

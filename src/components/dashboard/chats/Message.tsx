@@ -12,7 +12,7 @@ const commonMessageStyle = {
 };
 
 const commonTextStyle = {
-  fontSize: "0.9rem",
+  fontSize: "1rem",
 };
 
 const Container = ({ children, style }: { children: any; style: any }) => {
@@ -59,7 +59,7 @@ const Message = ({ message }: { message: IMessage }) => {
         }}
       >
         <Avatar
-          src={message.avatar ? message.avatar : " "}
+          src={message.avatar}
           sx={{ width: "2.25rem", height: "2.25rem" }}
         ></Avatar>
         <Box
