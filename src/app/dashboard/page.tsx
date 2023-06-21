@@ -15,16 +15,49 @@ import Chats from "@/components/dashboard/chats/Chats";
 import Notification from "@/components/dashboard/noti/Notification";
 import Calls from "@/components/dashboard/calls/Calls";
 import Friends from "@/components/dashboard/friends/Friends";
+import MainChat from "@/components/dashboard/chats/MainChat";
+import { IConversation } from "@/interfaces/Conversation";
+import { getConversations } from "@/api/chat";
+import NoConversation from "@/components/dashboard/chats/NoConversation";
+import io, { Socket } from "socket.io-client";
 
 const DashBoard = () => {
   const router = useRouter();
   const [selectedItem, setSelectedItem] = useState("chat");
-  // useEffect(() => {
-  //   if (localStorage.getItem(ACCESS_TOKEN)) {
-  //   } else {
-  //     router.push("/auth/signin");
-  //   }
-  // }, []);
+  const [selectedConversation, setSelectedConversation] = useState("");
+  const [conversationsList, setConversationsList] = useState<IConversation[]>(
+    []
+  );
+  const [socket, setSocket] = useState<Socket>();
+
+  useEffect(() => {
+    if (localStorage.getItem(ACCESS_TOKEN)) {
+    } else {
+      router.push("/auth/signin");
+    }
+  }, []);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem(ACCESS_TOKEN);
+    if (accessToken) {
+      const socketInstance = io("http://localhost:3001", {
+        extraHeaders: {
+          token: accessToken,
+        },
+      });
+
+      getConversations(accessToken)
+        .then((res) => {
+          if (res?.length) {
+            socketInstance.emit("join", { conversationId: res[0].id });
+            setSelectedConversation(res[0].id);
+            setConversationsList(res);
+            setSocket(socketInstance);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  }, []);
 
   const handleItemClick = (item: string) => {
     setSelectedItem(item);
@@ -107,13 +140,33 @@ const DashBoard = () => {
           />
         </Grid>
       </Grid>
-      <Grid item md={2.5} sx={{ backgroundColor: "#f8faff", color: "red" }}>
-        {selectedItem === "chat" && <Chats />}
+      <Grid item md={2.5} sx={{ backgroundColor: "#f8faff" }}>
+        {selectedItem === "chat" && (
+          <Chats
+            setSelectedConversation={setSelectedConversation}
+            selectedConversation={selectedConversation}
+            conversationsList={conversationsList}
+            socket={socket}
+          />
+        )}
         {selectedItem === "friend" && <Friends />}
         {selectedItem === "call" && <Calls />}
         {selectedItem === "noti" && <Notification />}
       </Grid>
-      <Grid item md={8.7}></Grid>
+      <Grid item md={8.7}>
+        {conversationsList.map((conversation) => {
+          if (conversation.id === selectedConversation) {
+            return (
+              <MainChat
+                conversation={conversation}
+                key={conversation.id}
+                socket={socket}
+              />
+            );
+          }
+        })}
+        {conversationsList.length === 0 && <NoConversation />}
+      </Grid>
     </Grid>
   );
 };

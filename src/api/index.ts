@@ -1,5 +1,6 @@
 import axios from "axios";
 import { BASE_API_URL } from "@/utils/constant";
+import { IConversation } from "@/interfaces/Conversation";
 
 export interface SignUpBody {
   firstName: string;
@@ -29,4 +30,14 @@ export const resendEmail = (email: string) => {
 
 export const verifyEmail = (email: any, otp: any) => {
   return axios.post(`${BASE_API_URL}/auth/verify-email`, { email, otp });
+};
+
+export const findAllUser = async (name: string) => {
+  try {
+    const responses = await axios.post(
+      `${BASE_API_URL}/user?page=1&size=100&type=all&name=${name}`
+    );
+
+    return responses.data;
+  } catch (err) {}
 };
