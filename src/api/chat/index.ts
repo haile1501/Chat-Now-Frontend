@@ -2,12 +2,7 @@ import { IConversation } from "@/interfaces/Conversation";
 import axios from "axios";
 import { BASE_API_URL } from "@/utils/constant";
 import { IMessage } from "@/interfaces/Message";
-
-const createHeader = (accessToken: string) => {
-  return {
-    Authorization: `Bearer ${accessToken}`,
-  };
-};
+import { createHeader } from "..";
 
 export const getConversations = async (accessToken: string) => {
   try {
@@ -18,6 +13,8 @@ export const getConversations = async (accessToken: string) => {
         headers,
       }
     );
+
+    console.log(responses.data);
 
     const conversationsList: IConversation[] = responses.data.map(
       (conversationData: any) => {
@@ -32,8 +29,10 @@ export const getConversations = async (accessToken: string) => {
           conversationName: "",
         };
 
-        let time = new Date(conversation.timeSend);
-        conversation.timeSend = time.getHours() + ":" + time.getMinutes();
+        if (conversation.timeSend) {
+          let time = new Date(conversation.timeSend);
+          conversation.timeSend = time.getHours() + ":" + time.getMinutes();
+        }
 
         if (conversation.type === "group") {
           conversation.conversationName = conversationData.groupName;
@@ -79,4 +78,44 @@ export const getMessagesList = async (
 
     return messagesList;
   } catch {}
+};
+
+export const createConversation = async (
+  accessToken: string,
+  userIds: number[],
+  type: string,
+  groupName: string | null
+) => {
+  try {
+    const headers = createHeader(accessToken);
+    const response = await axios.post(
+      `${BASE_API_URL}/conversation`,
+      {
+        userIds,
+        type,
+        groupName,
+      },
+      { headers }
+    );
+    const data = response.data[0];
+
+    const conversation: IConversation = {
+      id: data.conversationId,
+      type: data.type,
+      lastMessage: "",
+      isMyLastMessage: false,
+      timeSend: "",
+      senderId: -1,
+      avatar: "",
+      conversationName: data.conversationName,
+    };
+
+    if (conversation.type === "private") {
+      const partner = data.users[0];
+      conversation.conversationName =
+        partner.firstName + " " + partner.lastName;
+    }
+
+    return conversation;
+  } catch (err) {}
 };

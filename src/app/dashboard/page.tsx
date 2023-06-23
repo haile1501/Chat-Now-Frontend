@@ -146,6 +146,7 @@ const DashBoard = () => {
             setSelectedConversation={setSelectedConversation}
             selectedConversation={selectedConversation}
             conversationsList={conversationsList}
+            setConversationsList={setConversationsList}
             socket={socket}
           />
         )}

@@ -2,9 +2,9 @@ export interface IConversation {
   id: string;
   conversationName: string;
   avatar: string;
-  lastMessage: string;
-  timeSend: string;
-  senderId: number;
+  lastMessage: string | null;
+  timeSend: string | null;
+  senderId: number | null;
   type: string;
-  isMyLastMessage: boolean;
+  isMyLastMessage: boolean | null;
 }
