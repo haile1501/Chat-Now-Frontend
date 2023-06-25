@@ -7,4 +7,6 @@ export interface IConversation {
   senderId: number | null;
   type: string;
   isMyLastMessage: boolean | null;
+  isOnline: boolean;
+  privateUserId: number | null;
 }

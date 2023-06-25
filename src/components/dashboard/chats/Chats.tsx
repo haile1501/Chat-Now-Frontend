@@ -65,7 +65,15 @@ const Chats = ({
         senderId: conversationData.lastMessage?.user.userId,
         avatar: "",
         conversationName: conversationData.groupName,
+        isOnline: false,
+        privateUserId: null,
       };
+
+      if (conversation.type === "private") {
+        conversation.isOnline =
+          conversationData.member[0].onlineStatus === "Online";
+        conversation.privateUserId = conversationData.member[0].userId;
+      }
 
       if (conversation.lastMessage && conversation.timeSend) {
         let time = new Date(conversation.timeSend);

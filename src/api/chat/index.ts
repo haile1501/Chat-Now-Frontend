@@ -13,6 +13,7 @@ export const getConversations = async (accessToken: string) => {
         headers,
       }
     );
+    console.log(responses.data);
 
     const conversationsList: IConversation[] = responses.data.map(
       (conversationData: any) => {
@@ -24,20 +25,20 @@ export const getConversations = async (accessToken: string) => {
           timeSend: conversationData.lastMessage?.timeSend,
           senderId: conversationData.lastMessage?.user.userId,
           avatar: "",
-          conversationName: "",
+          conversationName: conversationData.groupName,
+          isOnline: false,
+          privateUserId: null,
         };
+
+        if (conversation.type === "private") {
+          conversation.isOnline =
+            conversationData.member[0].onlineStatus === "Online";
+          conversation.privateUserId = conversationData.member[0].userId;
+        }
 
         if (conversation.lastMessage && conversation.timeSend) {
           let time = new Date(conversation.timeSend);
           conversation.timeSend = time.getHours() + ":" + time.getMinutes();
-        }
-
-        if (conversation.type === "group") {
-          conversation.conversationName = conversationData.groupName;
-        } else {
-          const partner = conversationData.member[0];
-          conversation.conversationName =
-            partner.firstName + " " + partner.lastName;
         }
 
         return conversation;
@@ -106,14 +107,20 @@ export const createConversation = async (
       senderId: -1,
       avatar: "",
       conversationName: data.groupName,
+      isOnline: false,
+      privateUserId: null,
     };
 
     if (conversation.type === "private") {
       const partnerId = userIds[0];
-      const partner = data.users.find((user: any) => user.userId === partnerId);
-      conversation.conversationName =
-        partner.firstName + " " + partner.lastName;
+      const partner = data.member.find(
+        (user: any) => user.userId === partnerId
+      );
+      conversation.isOnline = partner.onlineStatus === "Online";
+      conversation.privateUserId = partner.userId;
     }
+
+    console.log(conversation);
 
     return conversation;
   } catch (err) {}

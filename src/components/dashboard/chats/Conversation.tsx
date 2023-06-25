@@ -37,6 +37,7 @@ const Conversation = ({
           flexDirection: "column",
           justifyContent: "space-between",
           ml: "0.75rem",
+          width: "100%",
         }}
       >
         <Typography
@@ -49,7 +50,14 @@ const Conversation = ({
           {conversation.conversationName}
         </Typography>
         <Typography
-          sx={{ fontSize: "1rem", color: isSelected ? "#ffffff" : "black" }}
+          sx={{
+            fontSize: "1rem",
+            color: isSelected ? "#ffffff" : "black",
+            width: "10rem",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+          }}
         >
           {conversation.isMyLastMessage
             ? `You: ${conversation.lastMessage}`

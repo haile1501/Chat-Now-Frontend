@@ -11,6 +11,7 @@ import { IMessage } from "@/interfaces/Message";
 import Message from "./Message";
 import { Socket } from "socket.io-client";
 import { getMessagesList } from "@/api/chat";
+import CircleIcon from "@mui/icons-material/Circle";
 
 const MainChat = ({
   conversation,
@@ -143,7 +144,23 @@ const MainChat = ({
               fontSize: "1rem",
             }}
           >
-            Online
+            {conversation.type === "group" ? (
+              ""
+            ) : conversation.isOnline ? (
+              <>
+                Online{" "}
+                <span>
+                  <CircleIcon sx={{ fill: "#31a24c", fontSize: "0.75rem" }} />
+                </span>
+              </>
+            ) : (
+              <>
+                Offline{" "}
+                <span>
+                  <CircleIcon sx={{ fill: "#848689", fontSize: "0.75rem" }} />
+                </span>
+              </>
+            )}
           </Typography>
         </Box>
         <Box
