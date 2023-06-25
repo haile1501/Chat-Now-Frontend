@@ -14,22 +14,20 @@ export const getConversations = async (accessToken: string) => {
       }
     );
 
-    console.log(responses.data);
-
     const conversationsList: IConversation[] = responses.data.map(
       (conversationData: any) => {
         const conversation: IConversation = {
           id: conversationData.conversationId,
           type: conversationData.type,
-          lastMessage: conversationData.lastMessage.content,
+          lastMessage: conversationData.lastMessage?.content,
           isMyLastMessage: conversationData.isMyLastMessage,
-          timeSend: conversationData.lastMessage.timeSend,
-          senderId: conversationData.lastMessage.user.userId,
+          timeSend: conversationData.lastMessage?.timeSend,
+          senderId: conversationData.lastMessage?.user.userId,
           avatar: "",
           conversationName: "",
         };
 
-        if (conversation.timeSend) {
+        if (conversation.lastMessage && conversation.timeSend) {
           let time = new Date(conversation.timeSend);
           conversation.timeSend = time.getHours() + ":" + time.getMinutes();
         }
@@ -97,7 +95,7 @@ export const createConversation = async (
       },
       { headers }
     );
-    const data = response.data[0];
+    const data = response.data;
 
     const conversation: IConversation = {
       id: data.conversationId,
@@ -107,11 +105,12 @@ export const createConversation = async (
       timeSend: "",
       senderId: -1,
       avatar: "",
-      conversationName: data.conversationName,
+      conversationName: data.groupName,
     };
 
     if (conversation.type === "private") {
-      const partner = data.users[0];
+      const partnerId = userIds[0];
+      const partner = data.users.find((user: any) => user.userId === partnerId);
       conversation.conversationName =
         partner.firstName + " " + partner.lastName;
     }

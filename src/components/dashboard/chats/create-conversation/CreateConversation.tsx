@@ -47,12 +47,10 @@ const CreateConversation = ({
   conversationsList,
   setConversationsList,
   setSelectedConversation,
-  selectedConversation,
 }: {
   open: boolean;
   handleClose: any;
   conversationsList: IConversation[];
-  selectedConversation: string;
   setConversationsList: Function;
   setSelectedConversation: Function;
 }) => {
@@ -127,8 +125,6 @@ const CreateConversation = ({
               )
             ) {
               setSelectedConversation(conversationData.id);
-              console.log(conversationsList);
-
               handleClose();
             } else {
               setConversationsList((prev: IConversation[]) => [
@@ -214,8 +210,17 @@ const CreateConversation = ({
               }
               renderOption={(props, option: User, state) => (
                 <li {...props} key={option.id}>
-                  <Box sx={{ display: "flex" }}>
-                    <Avatar src={option.avatar}></Avatar>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <Avatar
+                      src={option.avatar}
+                      sx={{ width: "2rem", height: "2rem" }}
+                    ></Avatar>
                     <Box>{`${option.firstName} ${option.lastName}`}</Box>
                   </Box>
                 </li>
@@ -270,8 +275,17 @@ const CreateConversation = ({
               }
               renderOption={(props, option: User, state) => (
                 <li {...props} key={option.id}>
-                  <Box sx={{ display: "flex" }}>
-                    <Avatar src={option.avatar}></Avatar>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <Avatar
+                      src={option.avatar}
+                      sx={{ width: "2rem", height: "2rem" }}
+                    ></Avatar>
                     <Box>{`${option.firstName} ${option.lastName}`}</Box>
                   </Box>
                 </li>

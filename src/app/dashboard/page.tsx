@@ -46,13 +46,14 @@ const DashBoard = () => {
         },
       });
 
+      setSocket(socketInstance);
+
       getConversations(accessToken)
         .then((res) => {
           if (res?.length) {
             socketInstance.emit("join", { conversationId: res[0].id });
             setSelectedConversation(res[0].id);
             setConversationsList(res);
-            setSocket(socketInstance);
           }
         })
         .catch((err) => console.log(err));

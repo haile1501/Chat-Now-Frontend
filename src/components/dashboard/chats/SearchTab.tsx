@@ -25,10 +25,19 @@ const SearchResult = ({
         flexDirection: "row",
         alignItems: "center",
         cursor: "pointer",
+        gap: "0.75rem",
+        ml: "1rem",
+        padding: "0.5rem",
+        ":hover": {
+          backgroundColor: "#f0f4fa",
+        },
       }}
       onClick={(event) => handleClick(event, conversation.id)}
     >
-      <Avatar src={conversation.avatar}></Avatar>
+      <Avatar
+        src={conversation.avatar}
+        sx={{ width: "2rem", height: "2rem" }}
+      ></Avatar>
       <Box>{conversation.conversationName}</Box>
     </Box>
   );
@@ -49,23 +58,24 @@ const SearchTab = ({
 }) => {
   return (
     <Box sx={{ color: "black" }}>
-      {conversationsList.map((conversation, index) => {
-        if (
-          conversation.conversationName
-            .toLowerCase()
-            .includes(searchInput.toLowerCase())
-        ) {
-          return (
-            <SearchResult
-              setSelectedConversation={setSelectedConversation}
-              conversation={conversation}
-              key={index}
-              setSearchInput={setSearchInput}
-              setIsSearching={setIsSearching}
-            />
-          );
-        }
-      })}
+      {searchInput.trim() !== "" &&
+        conversationsList.map((conversation, index) => {
+          if (
+            conversation.conversationName
+              .toLowerCase()
+              .includes(searchInput.toLowerCase())
+          ) {
+            return (
+              <SearchResult
+                setSelectedConversation={setSelectedConversation}
+                conversation={conversation}
+                key={index}
+                setSearchInput={setSearchInput}
+                setIsSearching={setIsSearching}
+              />
+            );
+          }
+        })}
     </Box>
   );
 };

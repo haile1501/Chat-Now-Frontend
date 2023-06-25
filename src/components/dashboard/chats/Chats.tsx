@@ -6,7 +6,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import Conversation from "./Conversation";
 import { IConversation } from "@/interfaces/Conversation";
 import { Socket } from "socket.io-client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchTab from "./SearchTab";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -36,6 +36,7 @@ const Chats = ({
 
   const handleConversationClick = (id: string) => {
     socket?.emit("join", { conversationId: id });
+
     setSelectedConversation(id);
   };
 
@@ -52,6 +53,38 @@ const Chats = ({
     const newInput = event.target.value;
     setSearchInput(newInput);
   };
+
+  useEffect(() => {
+    const handleMessageReceive = (conversationData: any) => {
+      const conversation: IConversation = {
+        id: conversationData.conversationId,
+        type: conversationData.type,
+        lastMessage: conversationData.lastMessage?.content,
+        isMyLastMessage: conversationData.isMyLastMessage,
+        timeSend: conversationData.lastMessage?.timeSend,
+        senderId: conversationData.lastMessage?.user.userId,
+        avatar: "",
+        conversationName: conversationData.groupName,
+      };
+
+      if (conversation.lastMessage && conversation.timeSend) {
+        let time = new Date(conversation.timeSend);
+        conversation.timeSend = time.getHours() + ":" + time.getMinutes();
+      }
+
+      setConversationsList((prev: IConversation[]) => {
+        const newLists = prev.filter((item) => conversation.id !== item.id);
+        newLists.unshift(conversation);
+        return newLists;
+      });
+    };
+
+    socket?.on("noti:receive", handleMessageReceive);
+
+    return () => {
+      socket?.off("receive", handleMessageReceive);
+    };
+  }, [socket]);
 
   return (
     <Box>
@@ -89,10 +122,9 @@ const Chats = ({
       <CreateConversation
         open={open}
         handleClose={handleClose}
-        selectedConversation={selectedConversation}
         conversationsList={conversationsList}
         setConversationsList={setConversationsList}
-        setSelectedConversation={setSelectedConversation}
+        setSelectedConversation={handleConversationClick}
       />
 
       <Box
@@ -100,7 +132,8 @@ const Chats = ({
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          width: "86%",
+          width: "100%",
+          padding: "0 8%",
           m: "auto",
           mt: "1.5rem",
           gap: "1rem",
@@ -119,7 +152,16 @@ const Chats = ({
         />
       </Box>
 
-      <Box sx={{ width: "86%", m: "auto", mt: "1.5rem", overflowY: "auto" }}>
+      <Box
+        sx={{
+          width: "100%",
+          padding: "0 8%",
+          m: "auto",
+          mt: "1.5rem",
+          maxHeight: "80vh",
+          overflowY: "auto",
+        }}
+      >
         {isSearching && (
           <SearchTab
             setSelectedConversation={setSelectedConversation}
