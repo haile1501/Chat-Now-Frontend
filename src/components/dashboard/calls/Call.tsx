@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import {
   AgoraVideoPlayer,
   createClient,
-  createMicrophoneAndCameraTracks,
   ClientConfig,
   IAgoraRTCRemoteUser,
+  createMicrophoneAndCameraTracks,
   ICameraVideoTrack,
   IMicrophoneAudioTrack,
 } from "agora-rtc-react";

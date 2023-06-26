@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "start:server": "node server.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -18,7 +19,9 @@
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
     "@types/validator": "^13.7.17",
+    "agora-react-uikit": "^1.2.0",
     "agora-rtc-react": "^1.1.3",
+    "agora-rtc-sdk-ng": "^4.18.0",
     "axios": "^1.4.0",
     "bufferutil": "^4.0.7",
     "dayjs": "^1.11.7",
