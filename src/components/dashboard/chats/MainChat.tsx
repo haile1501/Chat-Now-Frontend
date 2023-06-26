@@ -38,6 +38,15 @@ const MainChat = ({
     sendMessage();
   };
 
+  const handleCall = (type: string) => {
+    socket?.emit("call", { type, conversationId: conversation.id });
+    window.open(
+      `${window.location.origin}/call?conversationId=${conversation.id}&type=${type}`,
+      "Popup",
+      "location,status,scrollbars,resizable,width=600, height=600"
+    );
+  };
+
   const sendMessage = () => {
     if (messageText !== "") {
       const message: IMessage = {
@@ -173,9 +182,11 @@ const MainChat = ({
         >
           <VideocamOutlinedIcon
             sx={{ fill: "#4B4B4B", fontSize: "2rem", cursor: "pointer" }}
+            onClick={() => handleCall("video")}
           />
           <CallOutlinedIcon
             sx={{ fill: "#4B4B4B", fontSize: "1.75rem", cursor: "pointer" }}
+            onClick={() => handleCall("voice")}
           />
           <SearchOutlinedIcon
             sx={{ fill: "#4B4B4B", fontSize: "1.75rem", cursor: "pointer" }}

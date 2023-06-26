@@ -13,13 +13,14 @@ import SideBarItem from "@/components/dashboard/sidebar/SideBarItem";
 import { useEffect, useState } from "react";
 import Chats from "@/components/dashboard/chats/Chats";
 import Notification from "@/components/dashboard/noti/Notification";
-import Calls from "@/components/dashboard/calls/Calls";
+import CallsHistory from "@/components/dashboard/calls/CallsHistory";
 import Friends from "@/components/dashboard/friends/Friends";
 import MainChat from "@/components/dashboard/chats/MainChat";
 import { IConversation } from "@/interfaces/Conversation";
 import { getConversations } from "@/api/chat";
 import NoConversation from "@/components/dashboard/chats/NoConversation";
 import io, { Socket } from "socket.io-client";
+import { BASE_API_URL } from "@/utils/constant";
 
 const DashBoard = () => {
   const router = useRouter();
@@ -40,7 +41,7 @@ const DashBoard = () => {
   useEffect(() => {
     const accessToken = localStorage.getItem(ACCESS_TOKEN);
     if (accessToken) {
-      const socketInstance = io("http://localhost:3001", {
+      const socketInstance = io(BASE_API_URL, {
         extraHeaders: {
           token: accessToken,
         },
@@ -152,7 +153,7 @@ const DashBoard = () => {
           />
         )}
         {selectedItem === "friend" && <Friends />}
-        {selectedItem === "call" && <Calls />}
+        {selectedItem === "call" && <CallsHistory />}
         {selectedItem === "noti" && <Notification />}
       </Grid>
       <Grid item md={8.7}>

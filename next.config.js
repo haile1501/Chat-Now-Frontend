@@ -9,6 +9,10 @@ const nextConfig = {
       },
     ];
   },
+  serverRuntimeConfig: {
+    // other server runtime configurations...
+    host: "0.0.0.0",
+  },
 };
 
 module.exports = nextConfig;

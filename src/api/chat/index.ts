@@ -13,7 +13,6 @@ export const getConversations = async (accessToken: string) => {
         headers,
       }
     );
-    console.log(responses.data);
 
     const conversationsList: IConversation[] = responses.data.map(
       (conversationData: any) => {

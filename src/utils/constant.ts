@@ -1,4 +1,4 @@
-export const BASE_API_URL = "http://localhost:3001";
+export const BASE_API_URL = "http://10.14.124.28:3001";
 
 export const DEBOUNCE_TIME = 500;
 
