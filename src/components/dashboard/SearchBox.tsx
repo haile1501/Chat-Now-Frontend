@@ -21,7 +21,7 @@ const SearchBox = ({
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#EAF2FE",
-        padding: "1rem 1.5rem",
+        padding: "6% 7%",
         borderRadius: "1.4rem",
       }}
     >

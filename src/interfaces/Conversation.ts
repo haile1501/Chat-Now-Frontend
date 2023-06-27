@@ -1,3 +1,5 @@
+import { CALL_TYPE, USER_STATUS } from "@/utils/constant";
+
 export interface IConversation {
   id: string;
   conversationName: string;
@@ -7,6 +9,7 @@ export interface IConversation {
   senderId: number | null;
   type: string;
   isMyLastMessage: boolean | null;
-  isOnline: boolean;
+  userStatus: USER_STATUS;
   privateUserId: number | null;
+  callType: CALL_TYPE;
 }

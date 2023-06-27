@@ -7,6 +7,18 @@ export const EMAIL_HELPER_TEXT = {
   REGISTERD_EMAIl: "Email has already been registered",
 };
 
+export enum USER_STATUS {
+  ON = "Online",
+  OFF = "Offline",
+  CALL = "Call",
+}
+
+export enum CALL_TYPE {
+  VOICE = "voice",
+  VIDEO = "video",
+  NO = "no",
+}
+
 export const TEXT_FIELD_HELPER_TEXT = "This must not be empty";
 
 export const ERROR_CODE = {

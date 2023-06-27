@@ -14,7 +14,7 @@ const SideBarItem = ({
     <Box
       onClick={handleClick}
       sx={{
-        padding: "1rem",
+        padding: "11%",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

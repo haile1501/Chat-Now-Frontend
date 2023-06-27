@@ -13,6 +13,7 @@ import {
 import { APP_ID } from "@/constants/agora";
 import { genRTCToken } from "@/api/call";
 import { ACCESS_TOKEN } from "@/constants/literals";
+import { Socket } from "socket.io-client";
 
 const config: ClientConfig = {
   mode: "rtc",
@@ -21,15 +22,22 @@ const config: ClientConfig = {
 
 const appId: string = APP_ID; //ENTER APP ID HERE
 
-const Call = () => {
+const urlParams = new URLSearchParams(window.location.search);
+const channelName = urlParams.get("conversationId") || "";
+
+const Call = ({ socket }: { socket: Socket | undefined }) => {
   const [inCall, setInCall] = useState(true);
-  const urlParams = new URLSearchParams(window.location.search);
-  const channelName = urlParams.get("conversationId") || "";
 
   return (
     <div>
       <h1 className="heading">Agora RTC NG SDK React Wrapper</h1>
-      {inCall && <VideoCall setInCall={setInCall} channelName={channelName} />}
+      {inCall && (
+        <VideoCall
+          setInCall={setInCall}
+          channelName={channelName}
+          socket={socket}
+        />
+      )}
     </div>
   );
 };
@@ -43,8 +51,9 @@ const useMicrophoneAndCameraTracks = createMicrophoneAndCameraTracks();
 const VideoCall = (props: {
   setInCall: React.Dispatch<React.SetStateAction<boolean>>;
   channelName: string;
+  socket: Socket | undefined;
 }) => {
-  const { setInCall, channelName } = props;
+  const { setInCall, channelName, socket } = props;
   const [users, setUsers] = useState<IAgoraRTCRemoteUser[]>([]);
   const [start, setStart] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
@@ -108,7 +117,12 @@ const VideoCall = (props: {
   return (
     <div className="App">
       {ready && tracks && (
-        <Controls tracks={tracks} setStart={setStart} setInCall={setInCall} />
+        <Controls
+          tracks={tracks}
+          setStart={setStart}
+          setInCall={setInCall}
+          socket={socket}
+        />
       )}
       {start && tracks && <Videos users={users} tracks={tracks} />}
     </div>
@@ -153,9 +167,10 @@ export const Controls = (props: {
   tracks: [IMicrophoneAudioTrack, ICameraVideoTrack];
   setStart: React.Dispatch<React.SetStateAction<boolean>>;
   setInCall: React.Dispatch<React.SetStateAction<boolean>>;
+  socket: Socket | undefined;
 }) => {
   const client = useClient();
-  const { tracks, setStart, setInCall } = props;
+  const { tracks, setStart, setInCall, socket } = props;
   const [trackState, setTrackState] = useState({ video: true, audio: true });
 
   const mute = async (type: "audio" | "video") => {
@@ -173,6 +188,7 @@ export const Controls = (props: {
   };
 
   const leaveChannel = async () => {
+    socket?.emit("leave-call", { conversationId: channelName });
     await client.leave();
     client.removeAllListeners();
     // we close the tracks to perform cleanup
@@ -180,6 +196,7 @@ export const Controls = (props: {
     tracks[1].close();
     setStart(false);
     setInCall(false);
+    window.close();
   };
 
   return (
