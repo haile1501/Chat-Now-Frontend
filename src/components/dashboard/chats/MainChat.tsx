@@ -12,12 +12,45 @@ import Message from "./Message";
 import { Socket } from "socket.io-client";
 import { getMessagesList } from "@/api/chat";
 import CircleIcon from "@mui/icons-material/Circle";
+import { CALL_TYPE, USER_STATUS } from "@/utils/constant";
+import VideocamIcon from "@mui/icons-material/Videocam";
+import CallIcon from "@mui/icons-material/Call";
+
+const UserStatus = ({ userStatus }: { userStatus: USER_STATUS }) => {
+  let text;
+  let color;
+  switch (userStatus) {
+    case USER_STATUS.ON:
+      text = "Online";
+      color = "#31a24c";
+      break;
+    case USER_STATUS.OFF:
+      text = "Offline";
+      color = "#848689";
+      break;
+    case USER_STATUS.CALL:
+      text = "In a call";
+      color = "#d02d4d";
+      break;
+  }
+
+  return (
+    <span>
+      {text}{" "}
+      <span>
+        <CircleIcon sx={{ fill: color, fontSize: "0.75rem" }} />
+      </span>
+    </span>
+  );
+};
 
 const MainChat = ({
+  setConversationsList,
   conversation,
   socket,
 }: {
   conversation: IConversation;
+  setConversationsList: Function;
   socket: Socket | undefined;
 }) => {
   const [messageText, setMessageText] = useState("");
@@ -36,6 +69,35 @@ const MainChat = ({
 
   const handleSendClick = () => {
     sendMessage();
+  };
+
+  const handleCall = (type: string) => {
+    setConversationsList((prev: IConversation[]) => {
+      const newConversationsList = prev.map((conversation) => {
+        const newConversation = { ...conversation };
+        if (conversation.id === conversation.id) {
+          newConversation.callType = type as CALL_TYPE;
+        }
+        return newConversation;
+      });
+
+      return newConversationsList;
+    });
+    socket?.emit("call", { type, conversationId: conversation.id });
+    window.open(
+      `${window.location.origin}/call?conversationId=${conversation.id}&type=${type}`,
+      "Popup",
+      "location,status,scrollbars,resizable,width=600, height=600"
+    );
+  };
+
+  const handleJoinCall = (type: string) => {
+    window.open(
+      `${window.location.origin}/call?conversationId=${conversation.id}&type=${type}`,
+      "Popup",
+      "location,status,scrollbars,resizable,width=600, height=600"
+    );
+    socket?.emit("join-call", { conversationId: conversation.id });
   };
 
   const sendMessage = () => {
@@ -101,7 +163,7 @@ const MainChat = ({
     <Box
       sx={{
         width: "100%",
-        height: "100%",
+        height: "100vh",
         backgroundColor: "#f0f4fa",
         position: "relative",
       }}
@@ -110,23 +172,22 @@ const MainChat = ({
         sx={{
           width: "100%",
           backgroundColor: "#f8faff",
-          height: "5rem",
+          height: "7%",
           borderLeft: "1px solid #e3e4e9",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
+          p: "2.5% 0",
         }}
       >
         <Avatar
           src={conversation.avatar}
-          sx={{ width: "3.15rem", height: "3.15rem", ml: "2.25rem" }}
+          sx={{ width: "10", height: "10", ml: "2.25rem" }}
         ></Avatar>
         <Box
           sx={{
-            height: "3rem",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-between",
             ml: "0.8rem",
             color: "black",
           }}
@@ -146,20 +207,8 @@ const MainChat = ({
           >
             {conversation.type === "group" ? (
               ""
-            ) : conversation.isOnline ? (
-              <>
-                Online{" "}
-                <span>
-                  <CircleIcon sx={{ fill: "#31a24c", fontSize: "0.75rem" }} />
-                </span>
-              </>
             ) : (
-              <>
-                Offline{" "}
-                <span>
-                  <CircleIcon sx={{ fill: "#848689", fontSize: "0.75rem" }} />
-                </span>
-              </>
+              <UserStatus userStatus={conversation.userStatus as USER_STATUS} />
             )}
           </Typography>
         </Box>
@@ -171,12 +220,46 @@ const MainChat = ({
             gap: "2.5rem",
           }}
         >
-          <VideocamOutlinedIcon
-            sx={{ fill: "#4B4B4B", fontSize: "2rem", cursor: "pointer" }}
-          />
-          <CallOutlinedIcon
-            sx={{ fill: "#4B4B4B", fontSize: "1.75rem", cursor: "pointer" }}
-          />
+          {conversation.callType === CALL_TYPE.NO && (
+            <VideocamOutlinedIcon
+              sx={{ fill: "#4B4B4B", fontSize: "2rem", cursor: "pointer" }}
+              onClick={() => handleCall("video")}
+            />
+          )}
+          {conversation.callType === CALL_TYPE.NO && (
+            <CallOutlinedIcon
+              sx={{ fill: "#4B4B4B", fontSize: "1.75rem", cursor: "pointer" }}
+              onClick={() => handleCall("voice")}
+            />
+          )}
+          {conversation.callType !== CALL_TYPE.NO &&
+            conversation.type === "group" && (
+              <Box
+                onClick={() => handleJoinCall(conversation.callType)}
+                sx={{
+                  backgroundColor: "#45bd62",
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  color: "white",
+                  padding: "0.25rem 1.75rem",
+                  gap: "0.5rem",
+                  borderRadius: "0.7rem",
+                  cursor: "pointer",
+                }}
+              >
+                {conversation.callType === CALL_TYPE.VIDEO && (
+                  <VideocamIcon sx={{ fill: "white", fontSize: "2rem" }} />
+                )}
+                {conversation.callType === CALL_TYPE.VOICE && (
+                  <CallIcon sx={{ fill: "white", fontSize: "1.75rem" }} />
+                )}
+
+                <Typography sx={{ fontSize: "1.1rem", fontWeight: "bold" }}>
+                  Join call
+                </Typography>
+              </Box>
+            )}
           <SearchOutlinedIcon
             sx={{ fill: "#4B4B4B", fontSize: "1.75rem", cursor: "pointer" }}
           />
@@ -191,7 +274,7 @@ const MainChat = ({
           />
         </Box>
       </Box>
-      <Box sx={{ overflowY: "auto", height: "46rem" }} ref={containerRef}>
+      <Box sx={{ overflowY: "auto", maxHeight: "70vh" }} ref={containerRef}>
         {messagesList.map((message, index) => (
           <Message message={message} key={index} />
         ))}
@@ -203,7 +286,7 @@ const MainChat = ({
           bottom: 0,
           border: "1px solid #e3e4e9",
           backgroundColor: "#f8faff",
-          padding: "1.25rem 1.5rem",
+          padding: "1.3% 1.75%",
         }}
       >
         <Box
@@ -230,7 +313,7 @@ const MainChat = ({
                 background: "transparent",
                 color: "black",
                 fontSize: "1rem",
-                padding: "1rem 1.5rem",
+                padding: "1.5%",
                 width: "100%",
               }}
               value={messageText}
@@ -243,7 +326,7 @@ const MainChat = ({
             sx={{
               backgroundColor: "#5B96F7",
               ml: "1.5rem",
-              padding: "0.6rem 0.75rem",
+              padding: "0.9% 1%",
               borderRadius: "0.6rem",
               cursor: "pointer",
             }}

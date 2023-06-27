@@ -1,6 +1,5 @@
 import axios from "axios";
 import { BASE_API_URL } from "@/utils/constant";
-import { IConversation } from "@/interfaces/Conversation";
 
 export const createHeader = (accessToken: string) => {
   return {

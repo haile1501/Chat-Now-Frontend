@@ -12,6 +12,7 @@ import SearchTab from "./SearchTab";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CreateConversation from "./create-conversation/CreateConversation";
 import SearchBox from "../SearchBox";
+import { USER_STATUS } from "@/utils/constant";
 
 const Chats = ({
   selectedConversation,
@@ -65,13 +66,13 @@ const Chats = ({
         senderId: conversationData.lastMessage?.user.userId,
         avatar: "",
         conversationName: conversationData.groupName,
-        isOnline: false,
+        userStatus: USER_STATUS.OFF,
         privateUserId: null,
+        callType: conversationData.callType,
       };
 
       if (conversation.type === "private") {
-        conversation.isOnline =
-          conversationData.member[0].onlineStatus === "Online";
+        conversation.userStatus = conversationData.member[0].onlineStatus;
         conversation.privateUserId = conversationData.member[0].userId;
       }
 
@@ -87,23 +88,55 @@ const Chats = ({
       });
     };
 
+    const handleAddedToGroup = (conversation: IConversation) => {
+      setConversationsList((prev: IConversation[]) => {
+        const newLists = prev.filter((item) => conversation.id !== item.id);
+        newLists.unshift(conversation);
+        return newLists;
+      });
+    };
+
+    const handleUserStatusChange = ({
+      userId,
+      status,
+    }: {
+      userId: number;
+      status: string;
+    }) => {
+      setConversationsList((prev: IConversation[]) => {
+        const newConversationsList = prev.map((conversation) => {
+          const newConversation = { ...conversation };
+          if (conversation.privateUserId === userId) {
+            newConversation.userStatus = status as USER_STATUS;
+          }
+          return newConversation;
+        });
+
+        return newConversationsList;
+      });
+    };
+
     socket?.on("noti:receive", handleMessageReceive);
+    socket?.on("noti:added-to-group", handleAddedToGroup);
+    socket?.on("noti:user-status-change", handleUserStatusChange);
 
     return () => {
       socket?.off("receive", handleMessageReceive);
+      socket?.off("noti:added-to-group", handleAddedToGroup);
+      socket?.off("noti:user-status-change", handleUserStatusChange);
     };
   }, [socket]);
 
   return (
-    <Box>
+    <Box sx={{ height: "100%" }}>
       <Box
         sx={{
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          width: "86%",
+          width: "80%",
           m: "auto",
-          mt: "1.2rem",
+          mt: "7.5%",
         }}
       >
         <Typography
@@ -133,6 +166,7 @@ const Chats = ({
         conversationsList={conversationsList}
         setConversationsList={setConversationsList}
         setSelectedConversation={handleConversationClick}
+        socket={socket}
       />
 
       <Box
@@ -143,7 +177,7 @@ const Chats = ({
           width: "100%",
           padding: "0 8%",
           m: "auto",
-          mt: "1.5rem",
+          mt: "5%",
           gap: "1rem",
         }}
       >
@@ -165,8 +199,8 @@ const Chats = ({
           width: "100%",
           padding: "0 8%",
           m: "auto",
-          mt: "1.5rem",
-          maxHeight: "80vh",
+          mt: "10%",
+          maxHeight: "75vh",
           overflowY: "auto",
         }}
       >
@@ -179,17 +213,20 @@ const Chats = ({
             setIsSearching={setIsSearching}
           />
         )}
-        {!isSearching &&
-          conversationsList.map((conversation) => (
-            <Conversation
-              conversation={conversation}
-              isSelected={selectedConversation === conversation.id}
-              handleConversationClick={() =>
-                handleConversationClick(conversation.id)
-              }
-              key={conversation.id}
-            />
-          ))}
+        {!isSearching && (
+          <Box sx={{ width: "100%" }}>
+            {conversationsList.map((conversation) => (
+              <Conversation
+                conversation={conversation}
+                isSelected={selectedConversation === conversation.id}
+                handleConversationClick={() =>
+                  handleConversationClick(conversation.id)
+                }
+                key={conversation.id}
+              />
+            ))}
+          </Box>
+        )}
       </Box>
     </Box>
   );

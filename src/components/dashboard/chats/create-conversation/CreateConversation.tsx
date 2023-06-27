@@ -17,6 +17,7 @@ import { ACCESS_TOKEN } from "@/constants/literals";
 import { createFilterOptions } from "@mui/material";
 import { createConversation } from "@/api/chat";
 import { IConversation } from "@/interfaces/Conversation";
+import { Socket } from "socket.io-client";
 
 const Option = ({
   children,
@@ -47,12 +48,14 @@ const CreateConversation = ({
   conversationsList,
   setConversationsList,
   setSelectedConversation,
+  socket,
 }: {
   open: boolean;
   handleClose: any;
   conversationsList: IConversation[];
   setConversationsList: Function;
   setSelectedConversation: Function;
+  socket: Socket | undefined;
 }) => {
   const [currentTab, setCurrentTab] = useState("private");
   const [privateUser, setPrivateUser] = useState<User | null>(null);
@@ -132,6 +135,9 @@ const CreateConversation = ({
                 ...prev,
               ]);
               setSelectedConversation(conversationData.id);
+              if (conversationData.type === "group") {
+                socket?.emit("noti:group-created", conversationData);
+              }
               handleClose();
             }
           }
@@ -155,7 +161,7 @@ const CreateConversation = ({
           transform: "translate(-50%, -50%)",
           width: "27vw",
           height: "25vw",
-          bgcolor: "background.paper",
+          bgcolor: "white",
           //   border: "2px solid #000",
           //   boxShadow: 24,
           borderRadius: "5%",
@@ -163,6 +169,7 @@ const CreateConversation = ({
           color: "black",
           display: "flex",
           flexDirection: "column",
+          outline: "none",
         }}
       >
         <Box

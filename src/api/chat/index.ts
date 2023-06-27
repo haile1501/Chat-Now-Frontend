@@ -1,6 +1,6 @@
 import { IConversation } from "@/interfaces/Conversation";
 import axios from "axios";
-import { BASE_API_URL } from "@/utils/constant";
+import { BASE_API_URL, CALL_TYPE, USER_STATUS } from "@/utils/constant";
 import { IMessage } from "@/interfaces/Message";
 import { createHeader } from "..";
 
@@ -13,7 +13,6 @@ export const getConversations = async (accessToken: string) => {
         headers,
       }
     );
-    console.log(responses.data);
 
     const conversationsList: IConversation[] = responses.data.map(
       (conversationData: any) => {
@@ -26,13 +25,13 @@ export const getConversations = async (accessToken: string) => {
           senderId: conversationData.lastMessage?.user.userId,
           avatar: "",
           conversationName: conversationData.groupName,
-          isOnline: false,
+          userStatus: USER_STATUS.OFF,
           privateUserId: null,
+          callType: conversationData.callType,
         };
 
         if (conversation.type === "private") {
-          conversation.isOnline =
-            conversationData.member[0].onlineStatus === "Online";
+          conversation.userStatus = conversationData.member[0].onlineStatus;
           conversation.privateUserId = conversationData.member[0].userId;
         }
 
@@ -107,8 +106,9 @@ export const createConversation = async (
       senderId: -1,
       avatar: "",
       conversationName: data.groupName,
-      isOnline: false,
+      userStatus: USER_STATUS.OFF,
       privateUserId: null,
+      callType: CALL_TYPE.NO,
     };
 
     if (conversation.type === "private") {
@@ -116,11 +116,9 @@ export const createConversation = async (
       const partner = data.member.find(
         (user: any) => user.userId === partnerId
       );
-      conversation.isOnline = partner.onlineStatus === "Online";
+      conversation.userStatus = partner.onlineStatus;
       conversation.privateUserId = partner.userId;
     }
-
-    console.log(conversation);
 
     return conversation;
   } catch (err) {}

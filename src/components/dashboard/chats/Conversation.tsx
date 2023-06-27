@@ -20,29 +20,27 @@ const Conversation = ({
         display: "flex",
         flexDirection: "row",
         alignItems: "flex-start",
-        mt: "1rem",
+        mb: "6%",
         borderRadius: "1.25rem",
-        padding: "0.9rem 1.15rem",
+        padding: "6%",
         cursor: "pointer",
       }}
     >
       <Avatar
         src={conversation.avatar}
-        sx={{ width: "3.15rem", height: "3.15rem" }}
+        sx={{ width: "3rem", height: "3rem" }}
       ></Avatar>
       <Box
         sx={{
-          height: "3rem",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
           ml: "0.75rem",
-          width: "100%",
+          width: "60%",
         }}
       >
         <Typography
           sx={{
-            fontSize: "1.15rem",
+            fontSize: "1.1rem",
             fontWeight: "bold",
             color: isSelected ? "#ffffff" : "black",
           }}
@@ -53,7 +51,6 @@ const Conversation = ({
           sx={{
             fontSize: "1rem",
             color: isSelected ? "#ffffff" : "black",
-            width: "10rem",
             overflow: "hidden",
             whiteSpace: "nowrap",
             textOverflow: "ellipsis",

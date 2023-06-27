@@ -1,4 +1,4 @@
-export const BASE_API_URL = "http://localhost:3001";
+export const BASE_API_URL = "https://192.168.1.242:3001";
 
 export const DEBOUNCE_TIME = 500;
 
@@ -6,6 +6,18 @@ export const EMAIL_HELPER_TEXT = {
   INVALID_EMAIL: "Invalid email address",
   REGISTERD_EMAIl: "Email has already been registered",
 };
+
+export enum USER_STATUS {
+  ON = "Online",
+  OFF = "Offline",
+  CALL = "Call",
+}
+
+export enum CALL_TYPE {
+  VOICE = "voice",
+  VIDEO = "video",
+  NO = "no",
+}
 
 export const TEXT_FIELD_HELPER_TEXT = "This must not be empty";
 
