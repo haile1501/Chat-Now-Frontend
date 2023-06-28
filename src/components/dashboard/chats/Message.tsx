@@ -31,10 +31,23 @@ const Container = ({ children, style }: { children: any; style: any }) => {
   );
 };
 
-const Message = ({ message }: { message: IMessage }) => {
+const Message = ({
+  message,
+  isGroup,
+}: {
+  message: IMessage;
+  isGroup: boolean;
+}) => {
   if (message.isMine) {
     return (
-      <Container style={{ justifyContent: "flex-end", paddingRight: "1.5rem" }}>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          paddingRight: "1.5rem",
+        }}
+        id={String(message.messageId)}
+      >
         <Box
           sx={{
             backgroundColor: "#5B96F7",
@@ -45,11 +58,11 @@ const Message = ({ message }: { message: IMessage }) => {
             {message.content}
           </Typography>
         </Box>
-      </Container>
+      </Box>
     );
   } else {
     return (
-      <Container
+      <Box
         style={{
           paddingLeft: "1.5rem",
           display: "flex",
@@ -57,6 +70,7 @@ const Message = ({ message }: { message: IMessage }) => {
           alignItems: "flex-end",
           gap: "0.75rem",
         }}
+        id={String(message.messageId)}
       >
         <Avatar
           src={message.avatar}
@@ -68,11 +82,16 @@ const Message = ({ message }: { message: IMessage }) => {
             ...commonMessageStyle,
           }}
         >
-          <Typography sx={{ color: "#696969", ...commonTextStyle }}>
+          {isGroup && (
+            <Typography
+              sx={{ color: "#696969", fontSize: "0.78rem" }}
+            >{`${message.firstName} ${message.lastName}`}</Typography>
+          )}
+          <Typography sx={{ color: "black", ...commonTextStyle }}>
             {message.content}
           </Typography>
         </Box>
-      </Container>
+      </Box>
     );
   }
 };

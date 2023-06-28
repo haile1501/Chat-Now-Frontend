@@ -15,6 +15,8 @@ import CircleIcon from "@mui/icons-material/Circle";
 import { CALL_TYPE, USER_STATUS } from "@/utils/constant";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import CallIcon from "@mui/icons-material/Call";
+import React from "react";
+import SearchMessage from "./SearchMessage";
 
 const UserStatus = ({ userStatus }: { userStatus: USER_STATUS }) => {
   let text;
@@ -57,6 +59,21 @@ const MainChat = ({
   const [messagesList, setMessagesList] = useState<IMessage[]>([]);
   const containerRef = useRef<HTMLElement>(null);
 
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
+
+  const handleClick = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? conversation.id : undefined;
+
   const handleMessageChange = (event: any) => {
     setMessageText(event.target.value);
   };
@@ -83,26 +100,41 @@ const MainChat = ({
 
       return newConversationsList;
     });
-    socket?.emit("call", { type, conversationId: conversation.id });
-    window.open(
-      `${window.location.origin}/call?conversationId=${conversation.id}&type=${type}`,
-      "Popup",
-      "location,status,scrollbars,resizable,width=600, height=600"
-    );
+    socket?.emit("call", { type, conversationId: conversation.id }, () => {
+      window.open(
+        `${window.location.origin}/call?conversationId=${conversation.id}&type=${type}`,
+        "Popup",
+        "location,status,scrollbars,resizable,width=600, height=600"
+      );
+    });
   };
 
   const handleJoinCall = (type: string) => {
-    window.open(
-      `${window.location.origin}/call?conversationId=${conversation.id}&type=${type}`,
-      "Popup",
-      "location,status,scrollbars,resizable,width=600, height=600"
-    );
-    socket?.emit("join-call", { conversationId: conversation.id });
+    socket?.emit("join-call", { conversationId: conversation.id }, () => {
+      window.open(
+        `${window.location.origin}/call?conversationId=${conversation.id}&type=${type}`,
+        "Popup",
+        "location,status,scrollbars,resizable,width=600, height=600"
+      );
+    });
   };
 
   const sendMessage = () => {
     if (messageText !== "") {
+      let messageId = -1;
+      socket?.emit(
+        "send",
+        {
+          conversationId: conversation.id,
+          content: messageText,
+        },
+        (id: number) => {
+          messageId = id;
+        }
+      );
+
       const message: IMessage = {
+        messageId,
         content: messageText,
         isMine: true,
         lastName: null,
@@ -110,10 +142,6 @@ const MainChat = ({
         avatar: "",
       };
 
-      socket?.emit("send", {
-        conversationId: conversation.id,
-        content: messageText,
-      });
       setMessagesList((prevMessagesList) => [...prevMessagesList, message]);
       setMessageText("");
     }
@@ -136,6 +164,7 @@ const MainChat = ({
     function handleMessageReceive(messageData: any) {
       if (messageData.conversation.conversationId === conversation.id) {
         const message: IMessage = {
+          messageId: messageData.messageId,
           content: messageData.content,
           firstName: messageData.user.firstName,
           lastName: messageData.user.lastName,
@@ -260,9 +289,19 @@ const MainChat = ({
                 </Typography>
               </Box>
             )}
-          <SearchOutlinedIcon
-            sx={{ fill: "#4B4B4B", fontSize: "1.75rem", cursor: "pointer" }}
+          <Box onClick={handleClick}>
+            <SearchOutlinedIcon
+              sx={{ fill: "#4B4B4B", fontSize: "1.75rem", cursor: "pointer" }}
+            />
+          </Box>
+          <SearchMessage
+            messagesList={messagesList}
+            id={conversation.id}
+            open={open}
+            anchorEl={anchorEl}
+            handleClose={handleClose}
           />
+
           <InfoOutlinedIcon
             sx={{
               fill: "#4B4B4B",
@@ -274,9 +313,17 @@ const MainChat = ({
           />
         </Box>
       </Box>
-      <Box sx={{ overflowY: "auto", maxHeight: "70vh" }} ref={containerRef}>
+      <Box
+        sx={{ overflowY: "auto", maxHeight: "77%", position: "relative" }}
+        ref={containerRef}
+        id="messages-container"
+      >
         {messagesList.map((message, index) => (
-          <Message message={message} key={index} />
+          <Message
+            message={message}
+            key={index}
+            isGroup={conversation.type === "group"}
+          />
         ))}
       </Box>
       <Box

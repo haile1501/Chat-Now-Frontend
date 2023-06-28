@@ -44,12 +44,13 @@ const CallingNoti = ({
   socket: Socket | undefined;
 }) => {
   const handleReply = () => {
-    window.open(
-      `${window.location.origin}/call?conversationId=${conversationId}&type=${type}`,
-      "Popup",
-      "location,status,scrollbars,resizable,width=600, height=600"
-    );
-    socket?.emit("join-call", { conversationId });
+    socket?.emit("join-call", { conversationId }, () => {
+      window.open(
+        `${window.location.origin}/call?conversationId=${conversationId}&type=${type}`,
+        "Popup",
+        "location,status,scrollbars,resizable,width=600, height=600"
+      );
+    });
     handleClose();
   };
 

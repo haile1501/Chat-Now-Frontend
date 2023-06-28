@@ -3,16 +3,19 @@ import { IConversation } from "@/interfaces/Conversation";
 import { Avatar, Box, Typography } from "@mui/material";
 
 const Conversation = ({
+  id,
   conversation,
   isSelected,
   handleConversationClick,
 }: {
+  id: string;
   conversation: IConversation;
   isSelected: boolean;
   handleConversationClick: any;
 }) => {
   return (
     <Box
+      id={id}
       onClick={handleConversationClick}
       sx={{
         backgroundColor: isSelected ? "#5B96F7" : "#f0f4fa",

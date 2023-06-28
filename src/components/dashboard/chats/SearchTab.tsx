@@ -26,8 +26,9 @@ const SearchResult = ({
         alignItems: "center",
         cursor: "pointer",
         gap: "0.75rem",
-        ml: "1rem",
-        padding: "0.5rem",
+        fontSize: "1.1rem",
+        ml: "10%",
+        padding: "0.6rem",
         ":hover": {
           backgroundColor: "#f0f4fa",
         },
@@ -57,7 +58,7 @@ const SearchTab = ({
   setIsSearching: Function;
 }) => {
   return (
-    <Box sx={{ color: "black" }}>
+    <Box sx={{ color: "black", mt: "7%" }}>
       {searchInput.trim() !== "" &&
         conversationsList.map((conversation, index) => {
           if (

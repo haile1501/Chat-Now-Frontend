@@ -1,8 +1,6 @@
 "use client";
 
 import { Box, Typography } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import Conversation from "./Conversation";
 import { IConversation } from "@/interfaces/Conversation";
 import { Socket } from "socket.io-client";
@@ -121,7 +119,7 @@ const Chats = ({
     socket?.on("noti:user-status-change", handleUserStatusChange);
 
     return () => {
-      socket?.off("receive", handleMessageReceive);
+      socket?.off("noti:receive", handleMessageReceive);
       socket?.off("noti:added-to-group", handleAddedToGroup);
       socket?.off("noti:user-status-change", handleUserStatusChange);
     };
@@ -199,8 +197,7 @@ const Chats = ({
           width: "100%",
           padding: "0 8%",
           m: "auto",
-          mt: "10%",
-          maxHeight: "75vh",
+          maxHeight: "80vh",
           overflowY: "auto",
         }}
       >
@@ -214,9 +211,10 @@ const Chats = ({
           />
         )}
         {!isSearching && (
-          <Box sx={{ width: "100%" }}>
+          <Box sx={{ width: "100%", mt: "11%" }}>
             {conversationsList.map((conversation) => (
               <Conversation
+                id={conversation.id}
                 conversation={conversation}
                 isSelected={selectedConversation === conversation.id}
                 handleConversationClick={() =>
