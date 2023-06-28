@@ -188,15 +188,16 @@ export const Controls = (props: {
   };
 
   const leaveChannel = async () => {
-    socket?.emit("leave-call", { conversationId: channelName });
-    await client.leave();
-    client.removeAllListeners();
-    // we close the tracks to perform cleanup
-    tracks[0].close();
-    tracks[1].close();
-    setStart(false);
-    setInCall(false);
-    window.close();
+    socket?.emit("leave-call", { conversationId: channelName }, async () => {
+      await client.leave();
+      client.removeAllListeners();
+      // we close the tracks to perform cleanup
+      tracks[0].close();
+      tracks[1].close();
+      setStart(false);
+      setInCall(false);
+      window.close();
+    });
   };
 
   return (

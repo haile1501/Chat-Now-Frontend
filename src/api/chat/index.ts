@@ -64,6 +64,7 @@ export const getMessagesList = async (
     const messagesList: IMessage[] = responses.data.map((messageData: any) => {
       const user = messageData.user;
       const message: IMessage = {
+        messageId: messageData.messageId,
         content: messageData.content,
         firstName: user.firstName,
         lastName: user.lastName,

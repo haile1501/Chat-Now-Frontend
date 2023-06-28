@@ -4,7 +4,6 @@ import {
   Autocomplete,
   Avatar,
   Box,
-  Button,
   Chip,
   Modal,
   TextField,
@@ -14,7 +13,6 @@ import { useState } from "react";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import { findAllUser } from "@/api/user";
 import { ACCESS_TOKEN } from "@/constants/literals";
-import { createFilterOptions } from "@mui/material";
 import { createConversation } from "@/api/chat";
 import { IConversation } from "@/interfaces/Conversation";
 import { Socket } from "socket.io-client";
@@ -23,10 +21,12 @@ const Option = ({
   children,
   isSelected,
   handleClick,
+  type,
 }: {
   children: any;
   isSelected: boolean;
   handleClick: any;
+  type: string;
 }) => {
   return (
     <Box
@@ -35,6 +35,9 @@ const Option = ({
         cursor: "pointer",
         textAlign: "center",
         backgroundColor: isSelected ? "#5b96f7" : "#f0f4fa",
+        color: isSelected ? "white" : "black",
+        fontSize: "1.1rem",
+        padding: "0.5rem 1rem",
       }}
     >
       {children}
@@ -63,7 +66,6 @@ const CreateConversation = ({
   const [groupNameInput, setGroupNameInput] = useState("");
   const [users, setUsers] = useState<User[]>([]);
   const [groupUserSearch, setGroupUserSearch] = useState("");
-  const [privateUserSearch, setPrivateUserSearch] = useState("");
 
   const handleClick = (value: string) => {
     setUsers([]);
@@ -94,7 +96,11 @@ const CreateConversation = ({
   const checkIsValidInput = () => {
     if (currentTab === "private" && privateUser !== null) {
       return true;
-    } else if (currentTab === "group" && groupUsers.length) {
+    } else if (
+      currentTab === "group" &&
+      groupUsers.length &&
+      groupNameInput.trim() !== ""
+    ) {
       return true;
     }
 
@@ -180,7 +186,7 @@ const CreateConversation = ({
             justifyContent: "space-between",
           }}
         >
-          <Typography variant="h5" fontWeight="bold">
+          <Typography fontWeight="bold" fontSize="2rem">
             New Conversation
           </Typography>
           <CancelRoundedIcon
@@ -188,16 +194,18 @@ const CreateConversation = ({
             sx={{ fill: "#757575", cursor: "pointer" }}
           />
         </Box>
-        <Box sx={{ display: "flex", flexDirection: "row", gap: "2rem" }}>
+        <Box sx={{ display: "flex", flexDirection: "row", mt: "0.75rem" }}>
           <Option
             handleClick={() => handleClick("private")}
             isSelected={currentTab === "private"}
+            type="private"
           >
             Private
           </Option>
           <Option
             handleClick={() => handleClick("group")}
             isSelected={currentTab === "group"}
+            type="group"
           >
             Group
           </Option>
