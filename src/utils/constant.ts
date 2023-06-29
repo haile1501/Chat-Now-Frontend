@@ -13,6 +13,13 @@ export enum USER_STATUS {
   CALL = "Call",
 }
 
+export enum RELATIONSHIP {
+  FRIEND = "friend",
+  STRANGE = "strange",
+  RECEIVER = "receiver",
+  SENDER = "sender",
+}
+
 export enum CALL_TYPE {
   VOICE = "voice",
   VIDEO = "video",

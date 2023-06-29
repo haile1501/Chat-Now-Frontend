@@ -22,6 +22,7 @@ import io, { Socket } from "socket.io-client";
 import { BASE_API_URL, CALL_TYPE } from "@/utils/constant";
 import CallingNoti from "@/components/dashboard/calls/CallingNoti";
 import { User } from "@/interfaces/User";
+import Info from "@/components/dashboard/chats/Info";
 
 const DashBoard = () => {
   const router = useRouter();
@@ -35,6 +36,7 @@ const DashBoard = () => {
   const [caller, setCaller] = useState<User>();
   const [callType, setCallType] = useState<CALL_TYPE>(CALL_TYPE.VOICE);
   const [conversationId, setConversationId] = useState<string>("");
+  const [openInfo, setOpenInfo] = useState(false);
 
   const handleClose = () => setOpen(false);
 
@@ -123,139 +125,160 @@ const DashBoard = () => {
   };
 
   return (
-    <Grid container sx={{ height: "100vh", overflow: "hidden" }}>
-      <CallingNoti
-        open={open}
-        handleClose={handleClose}
-        caller={caller}
-        type={callType}
-        conversationId={conversationId}
-        socket={socket}
-      />
-      <Grid
-        md={0.8}
-        sx={{ backgroundColor: "#f0f4fa", borderRight: "1px solid #e4e6ea" }}
-        container
-        direction="column"
-        alignItems="center"
-        height="100vh"
-        item
-      >
-        <Box
-          sx={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
+    <Box sx={{ height: "100vh", width: "100vw", display: "flex" }}>
+      <Grid container sx={{ height: "100vh", overflow: "hidden" }}>
+        <CallingNoti
+          open={open}
+          handleClose={handleClose}
+          caller={caller}
+          type={callType}
+          conversationId={conversationId}
+          socket={socket}
+        />
+        <Grid
+          md={0.8}
+          sx={{ backgroundColor: "#f0f4fa", borderRight: "1px solid #e4e6ea" }}
+          container
+          direction="column"
+          alignItems="center"
+          height="100vh"
+          item
         >
           <Box
             sx={{
-              backgroundImage: `url(${chatnow.src})`,
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              width: "70%",
-              height: "7.25%",
-              mt: "25%",
-            }}
-          ></Box>
-          <Box
-            sx={{
-              alignItems: "center",
               width: "100%",
-              justifyContent: "space-between",
-              flexDirection: "column",
-              mt: "50%",
+              height: "100%",
               display: "flex",
-              gap: "1rem",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
-            <SideBarItem
-              isSelected={selectedItem === "chat"}
-              handleClick={() => handleItemClick("chat")}
-            >
-              <SmsOutlinedIcon
-                style={{
-                  fill: selectedItem === "chat" ? "#ffffff" : "#080707",
-                }}
-              />
-            </SideBarItem>
-            <SideBarItem
-              isSelected={selectedItem === "friend"}
-              handleClick={() => handleItemClick("friend")}
-            >
-              <PeopleAltOutlinedIcon
-                style={{
-                  fill: selectedItem === "friend" ? "#ffffff" : "#080707",
-                }}
-              />
-            </SideBarItem>
-            <SideBarItem
-              isSelected={selectedItem === "call"}
-              handleClick={() => handleItemClick("call")}
-            >
-              <CallOutlinedIcon
-                style={{
-                  fill: selectedItem === "call" ? "#ffffff" : "#080707",
-                }}
-              />
-            </SideBarItem>
-            <SideBarItem
-              isSelected={selectedItem === "noti"}
-              handleClick={() => handleItemClick("noti")}
-            >
-              <NotificationsNoneOutlinedIcon
-                style={{
-                  fill: selectedItem === "noti" ? "#ffffff" : "#080707",
-                }}
-              />
-            </SideBarItem>
-          </Box>
-          <Box sx={{ mt: "auto", cursor: "pointer", mb: "35%" }}>
-            <Avatar
-              alt="avatar"
-              src={chatnow.src}
+            <Box
               sx={{
-                width: "3.5rem",
-                height: "3.5rem",
-                border: "2px solid #b5b6ba",
+                backgroundImage: `url(${chatnow.src})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "contain",
+                backgroundPosition: "center",
+                width: "70%",
+                height: "7.25%",
+                mt: "25%",
               }}
-            />
-          </Box>
-        </Box>
-      </Grid>
-      <Grid item md={2.5} sx={{ backgroundColor: "#f8faff" }} height="100vh">
-        {selectedItem === "chat" && (
-          <Chats
-            setSelectedConversation={setSelectedConversation}
-            selectedConversation={selectedConversation}
-            conversationsList={conversationsList}
-            setConversationsList={setConversationsList}
-            socket={socket}
-          />
-        )}
-        {selectedItem === "friend" && <Friends />}
-        {selectedItem === "call" && <CallsHistory />}
-        {selectedItem === "noti" && <Notification />}
-      </Grid>
-      <Grid item md={8.7} height="100vh">
-        {conversationsList.map((conversation) => {
-          if (conversation.id === selectedConversation) {
-            return (
-              <MainChat
-                setConversationsList={setConversationsList}
-                conversation={conversation}
-                key={conversation.id}
-                socket={socket}
+            ></Box>
+            <Box
+              sx={{
+                alignItems: "center",
+                width: "100%",
+                justifyContent: "space-between",
+                flexDirection: "column",
+                mt: "50%",
+                display: "flex",
+                gap: "1rem",
+              }}
+            >
+              <SideBarItem
+                isSelected={selectedItem === "chat"}
+                handleClick={() => handleItemClick("chat")}
+              >
+                <SmsOutlinedIcon
+                  style={{
+                    fill: selectedItem === "chat" ? "#ffffff" : "#080707",
+                  }}
+                />
+              </SideBarItem>
+              <SideBarItem
+                isSelected={selectedItem === "friend"}
+                handleClick={() => handleItemClick("friend")}
+              >
+                <PeopleAltOutlinedIcon
+                  style={{
+                    fill: selectedItem === "friend" ? "#ffffff" : "#080707",
+                  }}
+                />
+              </SideBarItem>
+              <SideBarItem
+                isSelected={selectedItem === "call"}
+                handleClick={() => handleItemClick("call")}
+              >
+                <CallOutlinedIcon
+                  style={{
+                    fill: selectedItem === "call" ? "#ffffff" : "#080707",
+                  }}
+                />
+              </SideBarItem>
+              <SideBarItem
+                isSelected={selectedItem === "noti"}
+                handleClick={() => handleItemClick("noti")}
+              >
+                <NotificationsNoneOutlinedIcon
+                  style={{
+                    fill: selectedItem === "noti" ? "#ffffff" : "#080707",
+                  }}
+                />
+              </SideBarItem>
+            </Box>
+            <Box sx={{ mt: "auto", cursor: "pointer", mb: "35%" }}>
+              <Avatar
+                alt="avatar"
+                src={chatnow.src}
+                sx={{
+                  width: "3.5rem",
+                  height: "3.5rem",
+                  border: "2px solid #b5b6ba",
+                }}
               />
-            );
-          }
-        })}
-        {conversationsList.length === 0 && <NoConversation />}
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item md={2.5} sx={{ backgroundColor: "#f8faff" }} height="100vh">
+          {selectedItem === "chat" && (
+            <Chats
+              setSelectedConversation={setSelectedConversation}
+              selectedConversation={selectedConversation}
+              conversationsList={conversationsList}
+              setConversationsList={setConversationsList}
+              socket={socket}
+            />
+          )}
+          {selectedItem === "friend" && <Friends />}
+          {selectedItem === "call" && <CallsHistory />}
+          {selectedItem === "noti" && <Notification />}
+        </Grid>
+        <Grid item md={8.7} height="100vh">
+          {conversationsList.map((conversation) => {
+            if (conversation.id === selectedConversation) {
+              return (
+                <MainChat
+                  setConversationsList={setConversationsList}
+                  conversation={conversation}
+                  key={conversation.id}
+                  socket={socket}
+                  setOpenInfo={setOpenInfo}
+                />
+              );
+            }
+          })}
+          {conversationsList.length === 0 && <NoConversation />}
+        </Grid>
       </Grid>
-    </Grid>
+      {openInfo && (
+        <>
+          {conversationsList.map((conversation) => {
+            if (conversation.id === selectedConversation) {
+              return (
+                <Info
+                  conversation={conversation}
+                  key={conversation.id}
+                  conversationsList={conversationsList}
+                  setSelectedConversation={setSelectedConversation}
+                  setConversationsList={setConversationsList}
+                  socket={socket}
+                />
+              );
+            }
+          })}
+        </>
+      )}
+    </Box>
   );
 };
 
