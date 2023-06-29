@@ -69,7 +69,7 @@ export const getMessagesList = async (
         content: messageData.content,
         firstName: user.firstName,
         lastName: user.lastName,
-        avatar: messageData.user,
+        avatar: user.avatar,
         isMine: messageData.isMine,
       };
 
@@ -159,10 +159,12 @@ export const leaveGroup = async (
 ) => {
   try {
     const headers = createHeader(accessToken);
-    const response = await axios.post(
+    const response = await axios.delete(
       `${BASE_API_URL}/conversation/${conversationId}/leave`,
       { headers }
     );
+
+    console.log(response);
 
     return response;
   } catch (err) {}

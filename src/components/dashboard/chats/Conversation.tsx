@@ -1,6 +1,7 @@
 "use client";
+import UserAvatar from "@/components/UserAvatar";
 import { IConversation } from "@/interfaces/Conversation";
-import { Avatar, Box, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const Conversation = ({
   id,
@@ -29,10 +30,10 @@ const Conversation = ({
         cursor: "pointer",
       }}
     >
-      <Avatar
+      <UserAvatar
         src={conversation.avatar}
-        sx={{ width: "3rem", height: "3rem" }}
-      ></Avatar>
+        styles={{ width: "3rem", height: "3rem" }}
+      ></UserAvatar>
       <Box
         sx={{
           display: "flex",

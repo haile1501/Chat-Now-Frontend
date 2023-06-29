@@ -1,3 +1,4 @@
+import UserAvatar from "@/components/UserAvatar";
 import { IConversation } from "@/interfaces/Conversation";
 import { Avatar, Box } from "@mui/material";
 
@@ -35,10 +36,10 @@ const SearchResult = ({
       }}
       onClick={(event) => handleClick(event, conversation.id)}
     >
-      <Avatar
+      <UserAvatar
         src={conversation.avatar}
-        sx={{ width: "2rem", height: "2rem" }}
-      ></Avatar>
+        styles={{ width: "2rem", height: "2rem" }}
+      ></UserAvatar>
       <Box>{conversation.conversationName}</Box>
     </Box>
   );

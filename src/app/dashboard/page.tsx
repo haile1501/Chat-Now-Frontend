@@ -1,6 +1,6 @@
 "use client";
 import { ACCESS_TOKEN } from "@/constants/literals";
-import { Avatar, Box, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { useRouter } from "next/navigation";
 import chatnow from "../../../public/chatnow.png";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
@@ -23,6 +23,7 @@ import { BASE_API_URL, CALL_TYPE } from "@/utils/constant";
 import CallingNoti from "@/components/dashboard/calls/CallingNoti";
 import { User } from "@/interfaces/User";
 import Info from "@/components/dashboard/chats/Info";
+import UserAvatar from "@/components/UserAvatar";
 
 const DashBoard = () => {
   const router = useRouter();
@@ -217,10 +218,9 @@ const DashBoard = () => {
               </SideBarItem>
             </Box>
             <Box sx={{ mt: "auto", cursor: "pointer", mb: "35%" }}>
-              <Avatar
-                alt="avatar"
+              <UserAvatar
                 src={chatnow.src}
-                sx={{
+                styles={{
                   width: "3.5rem",
                   height: "3.5rem",
                   border: "2px solid #b5b6ba",
@@ -239,7 +239,7 @@ const DashBoard = () => {
               socket={socket}
             />
           )}
-          {selectedItem === "friend" && <Friends />}
+          {selectedItem === "friend" && <Friends socket={socket} />}
           {selectedItem === "call" && <CallsHistory />}
           {selectedItem === "noti" && <Notification />}
         </Grid>

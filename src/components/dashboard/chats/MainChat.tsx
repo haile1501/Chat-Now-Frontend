@@ -1,6 +1,6 @@
 "use client";
 import { IConversation } from "@/interfaces/Conversation";
-import { Avatar, Box, Button, Drawer, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -17,7 +17,7 @@ import VideocamIcon from "@mui/icons-material/Videocam";
 import CallIcon from "@mui/icons-material/Call";
 import React from "react";
 import SearchMessage from "./SearchMessage";
-import Info from "./Info";
+import UserAvatar from "@/components/UserAvatar";
 
 const UserStatus = ({ userStatus }: { userStatus: USER_STATUS }) => {
   let text;
@@ -216,10 +216,10 @@ const MainChat = ({
           p: "2.5% 0",
         }}
       >
-        <Avatar
+        <UserAvatar
           src={conversation.avatar}
-          sx={{ width: "10", height: "10", ml: "2.25rem" }}
-        ></Avatar>
+          styles={{ width: "10", height: "10", ml: "2.25rem" }}
+        ></UserAvatar>
         <Box
           sx={{
             display: "flex",

@@ -1,6 +1,7 @@
 "use client";
+import UserAvatar from "@/components/UserAvatar";
 import { IMessage } from "@/interfaces/Message";
-import { Avatar, Box, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const commonMessageStyle = {
   padding: "0.5rem 1rem",
@@ -13,22 +14,6 @@ const commonMessageStyle = {
 
 const commonTextStyle = {
   fontSize: "1rem",
-};
-
-const Container = ({ children, style }: { children: any; style: any }) => {
-  return (
-    <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "row",
-        p: 0,
-        ...style,
-      }}
-    >
-      {children}
-    </Box>
-  );
 };
 
 const Message = ({
@@ -72,10 +57,10 @@ const Message = ({
         }}
         id={String(message.messageId)}
       >
-        <Avatar
+        <UserAvatar
           src={message.avatar}
-          sx={{ width: "2.25rem", height: "2.25rem" }}
-        ></Avatar>
+          styles={{ width: "2.25rem", height: "2.25rem" }}
+        ></UserAvatar>
         <Box
           sx={{
             backgroundColor: "#FFFFFF",

@@ -1,5 +1,6 @@
 "use client";
 import { User } from "@/interfaces/User";
+import defaultAvatar from "../../../../../public/user.png";
 import {
   Autocomplete,
   Avatar,
@@ -16,6 +17,7 @@ import { ACCESS_TOKEN } from "@/constants/literals";
 import { createConversation } from "@/api/chat";
 import { IConversation } from "@/interfaces/Conversation";
 import { Socket } from "socket.io-client";
+import UserAvatar from "@/components/UserAvatar";
 
 const Option = ({
   children,
@@ -232,10 +234,10 @@ const CreateConversation = ({
                       gap: "0.5rem",
                     }}
                   >
-                    <Avatar
+                    <UserAvatar
                       src={option.avatar}
-                      sx={{ width: "2rem", height: "2rem" }}
-                    ></Avatar>
+                      styles={{ width: "2rem", height: "2rem" }}
+                    ></UserAvatar>
                     <Box>{`${option.firstName} ${option.lastName}`}</Box>
                   </Box>
                 </li>
@@ -245,7 +247,12 @@ const CreateConversation = ({
                   <>
                     {value.map((option, index) => (
                       <Chip
-                        avatar={<Avatar alt="Avatar" src={option.avatar} />}
+                        avatar={
+                          <Avatar
+                            alt="Avatar"
+                            src={option.avatar || defaultAvatar.src}
+                          />
+                        }
                         variant="outlined"
                         {...getTagProps({ index })}
                         key={option.id}
@@ -297,10 +304,10 @@ const CreateConversation = ({
                       gap: "0.5rem",
                     }}
                   >
-                    <Avatar
+                    <UserAvatar
                       src={option.avatar}
-                      sx={{ width: "2rem", height: "2rem" }}
-                    ></Avatar>
+                      styles={{ width: "2rem", height: "2rem" }}
+                    ></UserAvatar>
                     <Box>{`${option.firstName} ${option.lastName}`}</Box>
                   </Box>
                 </li>
@@ -310,7 +317,12 @@ const CreateConversation = ({
                   <>
                     {value.map((option, index) => (
                       <Chip
-                        avatar={<Avatar alt="Avatar" src={option.avatar} />}
+                        avatar={
+                          <Avatar
+                            alt="Avatar"
+                            src={option.avatar || defaultAvatar.src}
+                          />
+                        }
                         variant="outlined"
                         {...getTagProps({ index })}
                         key={option.id}

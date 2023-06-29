@@ -2,7 +2,6 @@
 
 import { IConversation } from "@/interfaces/Conversation";
 import {
-  Avatar,
   Box,
   Collapse,
   List,
@@ -27,6 +26,7 @@ import AddMember from "./AddMember";
 import { Socket } from "socket.io-client";
 import { getUserProfile } from "@/api";
 import { RELATIONSHIP } from "@/utils/constant";
+import UserAvatar from "@/components/UserAvatar";
 
 const headerStyles = {
   height: "7.16%",
@@ -105,10 +105,10 @@ const Info = ({
             pb: "2rem",
           }}
         >
-          <Avatar
+          <UserAvatar
             src={user?.avatar}
-            sx={{ height: "3.5rem", width: "3.5rem" }}
-          ></Avatar>
+            styles={{ height: "3.5rem", width: "3.5rem" }}
+          ></UserAvatar>
           <Typography
             sx={{
               ...commonTextStyles,
@@ -285,10 +285,10 @@ const Info = ({
             pb: "2rem",
           }}
         >
-          <Avatar
+          <UserAvatar
             src={conversation.avatar}
-            sx={{ height: "3.5rem", width: "3.5rem" }}
-          ></Avatar>
+            styles={{ height: "3.5rem", width: "3.5rem" }}
+          ></UserAvatar>
           <Typography
             sx={{
               ...commonTextStyles,
@@ -352,7 +352,7 @@ const Info = ({
               {members.map((member, index) => (
                 <ListItem key={index}>
                   <Box sx={{ display: "flex", gap: "0.75rem" }}>
-                    <Avatar src={member.avatar}></Avatar>
+                    <UserAvatar src={member.avatar}></UserAvatar>
                     <Typography>{`${member.firstName} ${member.lastName}`}</Typography>
                   </Box>
                 </ListItem>
