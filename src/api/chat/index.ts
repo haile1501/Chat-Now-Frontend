@@ -3,6 +3,7 @@ import axios from "axios";
 import { BASE_API_URL, CALL_TYPE, USER_STATUS } from "@/utils/constant";
 import { IMessage } from "@/interfaces/Message";
 import { createHeader } from "..";
+import { User } from "@/interfaces/User";
 
 export const getConversations = async (accessToken: string) => {
   try {
@@ -122,5 +123,47 @@ export const createConversation = async (
     }
 
     return conversation;
+  } catch (err) {}
+};
+
+export const getConversationMembers = async (
+  accessToken: string,
+  conversationId: string
+) => {
+  try {
+    const headers = createHeader(accessToken);
+    const response = await axios.get(
+      `${BASE_API_URL}/conversation/${conversationId}/member`,
+      { headers }
+    );
+    const data = response.data;
+
+    const members: User[] = data.users.map((user: any) => {
+      const member: User = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatar: user.avatar,
+        id: user.userId,
+      };
+
+      return member;
+    });
+
+    return members;
+  } catch (err) {}
+};
+
+export const leaveGroup = async (
+  accessToken: string,
+  conversationId: string
+) => {
+  try {
+    const headers = createHeader(accessToken);
+    const response = await axios.post(
+      `${BASE_API_URL}/conversation/${conversationId}/leave`,
+      { headers }
+    );
+
+    return response;
   } catch (err) {}
 };

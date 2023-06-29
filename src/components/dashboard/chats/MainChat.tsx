@@ -1,6 +1,6 @@
 "use client";
 import { IConversation } from "@/interfaces/Conversation";
-import { Avatar, Box, Typography } from "@mui/material";
+import { Avatar, Box, Button, Drawer, Typography } from "@mui/material";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -17,6 +17,7 @@ import VideocamIcon from "@mui/icons-material/Videocam";
 import CallIcon from "@mui/icons-material/Call";
 import React from "react";
 import SearchMessage from "./SearchMessage";
+import Info from "./Info";
 
 const UserStatus = ({ userStatus }: { userStatus: USER_STATUS }) => {
   let text;
@@ -50,10 +51,12 @@ const MainChat = ({
   setConversationsList,
   conversation,
   socket,
+  setOpenInfo,
 }: {
   conversation: IConversation;
   setConversationsList: Function;
   socket: Socket | undefined;
+  setOpenInfo: Function;
 }) => {
   const [messageText, setMessageText] = useState("");
   const [messagesList, setMessagesList] = useState<IMessage[]>([]);
@@ -69,6 +72,10 @@ const MainChat = ({
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleInfoClick = () => {
+    setOpenInfo((prev: boolean) => !prev);
   };
 
   const open = Boolean(anchorEl);
@@ -310,6 +317,7 @@ const MainChat = ({
               width: "7rem",
               cursor: "pointer",
             }}
+            onClick={handleInfoClick}
           />
         </Box>
       </Box>

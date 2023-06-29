@@ -46,6 +46,9 @@ const Conversation = ({
             fontSize: "1.1rem",
             fontWeight: "bold",
             color: isSelected ? "#ffffff" : "black",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
           }}
         >
           {conversation.conversationName}
