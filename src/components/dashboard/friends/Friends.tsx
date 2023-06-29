@@ -23,8 +23,13 @@ const Friends = ({ socket }: { socket: Socket | undefined }) => {
     setOpenFriends(true);
   };
 
+  const [openRequests, setOpenRequests] = useState(false);
+  const handleOpenRequests = () => {
+    setOpenRequests(true);
+  };
+
   return (
-    <Box sx={{ height: "100%" }}>
+    <Box sx={{ height: "100%", color: "black" }}>
       <Box
         sx={{
           display: "flex",
@@ -52,7 +57,7 @@ const Friends = ({ socket }: { socket: Socket | undefined }) => {
         >
           <HowToRegIcon />
           <Typography sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
-            Members
+            Your friends
           </Typography>
           <Box sx={{ ml: "auto" }}>
             {openFriends ? <ExpandLess /> : <ExpandMore />}
@@ -60,6 +65,37 @@ const Friends = ({ socket }: { socket: Socket | undefined }) => {
         </ListItemButton>
         <Collapse
           in={openFriends}
+          timeout="auto"
+          unmountOnExit
+          sx={{ mt: "0.5rem" }}
+        >
+          <List component="div" disablePadding>
+            {friends.map((friend, index) => (
+              <ListItem key={index}>
+                <Box sx={{ display: "flex", gap: "0.75rem" }}>
+                  <UserAvatar src={friend.avatar}></UserAvatar>
+                  <Typography>{`${friend.firstName} ${friend.lastName}`}</Typography>
+                </Box>
+              </ListItem>
+            ))}
+          </List>
+        </Collapse>
+      </Box>
+      <Box>
+        <ListItemButton
+          onClick={handleOpenRequests}
+          sx={{ cursor: "pointer", display: "flex", gap: "0.5rem" }}
+        >
+          <PersonAddAltRoundedIcon />
+          <Typography sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+            Friends request
+          </Typography>
+          <Box sx={{ ml: "auto" }}>
+            {openRequests ? <ExpandLess /> : <ExpandMore />}
+          </Box>
+        </ListItemButton>
+        <Collapse
+          in={openRequests}
           timeout="auto"
           unmountOnExit
           sx={{ mt: "0.5rem" }}

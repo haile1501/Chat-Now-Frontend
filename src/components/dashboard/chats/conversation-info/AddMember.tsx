@@ -1,7 +1,7 @@
 import { findAllUser } from "@/api/user";
 import { ACCESS_TOKEN } from "@/constants/literals";
 import { User } from "@/interfaces/User";
-import defaultAvatar from "../../../../public/user.png";
+import defaultAvatar from "../../../../../public/user.png";
 import {
   Modal,
   Box,
@@ -15,17 +15,22 @@ import { useState } from "react";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import { Socket } from "socket.io-client";
 import UserAvatar from "@/components/UserAvatar";
+import { addUsersToGroup } from "@/api/chat";
 
 const AddMember = ({
   open,
   handleClose,
   socket,
   members,
+  setMembers,
+  conversationId,
 }: {
   open: boolean;
   handleClose: any;
   socket: Socket | undefined;
   members: User[];
+  setMembers: Function;
+  conversationId: string;
 }) => {
   const [groupUsers, setGroupUsers] = useState<User[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -55,7 +60,20 @@ const AddMember = ({
     return groupUsers.length > 0;
   };
 
-  const handleAddUsers = () => {};
+  const handleAddUsers = () => {
+    const accessToken = localStorage.getItem(ACCESS_TOKEN);
+    if (accessToken) {
+      const userIds = groupUsers.map((user) => user.id);
+      addUsersToGroup(accessToken, conversationId, userIds)
+        .then((usersData) => {
+          if (usersData) {
+            setMembers(usersData);
+            handleClose();
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
 
   return (
     <Modal

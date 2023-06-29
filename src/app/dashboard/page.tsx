@@ -22,7 +22,7 @@ import io, { Socket } from "socket.io-client";
 import { BASE_API_URL, CALL_TYPE } from "@/utils/constant";
 import CallingNoti from "@/components/dashboard/calls/CallingNoti";
 import { User } from "@/interfaces/User";
-import Info from "@/components/dashboard/chats/Info";
+import Info from "@/components/dashboard/chats/conversation-info/Info";
 import UserAvatar from "@/components/UserAvatar";
 
 const DashBoard = () => {

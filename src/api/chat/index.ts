@@ -167,3 +167,36 @@ export const leaveGroup = async (
     return response;
   } catch (err) {}
 };
+
+export const addUsersToGroup = async (
+  accessToken: string,
+  conversationId: string,
+  userIds: number[]
+) => {
+  try {
+    const headers = createHeader(accessToken);
+    const response = await axios.post(
+      `${BASE_API_URL}/conversation/${conversationId}/member`,
+      {
+        userIds,
+      },
+      { headers }
+    );
+
+    const data = response.data;
+    console.log(data);
+
+    const members: User[] = data.users.map((user: any) => {
+      const member: User = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatar: user.avatar,
+        id: user.userId,
+      };
+
+      return member;
+    });
+
+    return members;
+  } catch (err) {}
+};
