@@ -1,11 +1,12 @@
 "use client";
 
 import { User } from "@/interfaces/User";
-import { Modal, Typography, Box, Avatar } from "@mui/material";
+import { Modal, Typography, Box } from "@mui/material";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import CallIcon from "@mui/icons-material/Call";
 import CloseIcon from "@mui/icons-material/Close";
 import { Socket } from "socket.io-client";
+import UserAvatar from "@/components/UserAvatar";
 
 const OptionButton = ({
   accept,
@@ -80,10 +81,10 @@ const CallingNoti = ({
           gap: "1.5rem",
         }}
       >
-        <Avatar
+        <UserAvatar
           src={caller?.avatar}
-          sx={{ height: "3rem", width: "3rem" }}
-        ></Avatar>
+          styles={{ height: "3rem", width: "3rem" }}
+        ></UserAvatar>
         <Typography sx={{ fontSize: "1.2rem" }}>
           <span
             style={{ fontWeight: "bold" }}

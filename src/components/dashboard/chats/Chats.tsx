@@ -173,7 +173,7 @@ const Chats = ({
           flexDirection: "row",
           alignItems: "center",
           width: "100%",
-          padding: "0 8%",
+          padding: "0 6.5%",
           m: "auto",
           mt: "5%",
           gap: "1rem",
@@ -195,7 +195,7 @@ const Chats = ({
       <Box
         sx={{
           width: "100%",
-          padding: "0 8%",
+          padding: "0 6.5%",
           m: "auto",
           maxHeight: "80vh",
           overflowY: "auto",
