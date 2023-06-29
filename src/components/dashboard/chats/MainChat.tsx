@@ -95,21 +95,21 @@ const MainChat = ({
     sendMessage();
   };
 
-  const handleCall = (type: string) => {
+  const handleCall = (callType: string) => {
     setConversationsList((prev: IConversation[]) => {
-      const newConversationsList = prev.map((conversation) => {
-        const newConversation = { ...conversation };
-        if (conversation.id === conversation.id) {
-          newConversation.callType = type as CALL_TYPE;
+      const newConversationsList = prev.map((conversationData) => {
+        const newConversation = { ...conversationData };
+        if (conversationData.id === conversation.id) {
+          newConversation.callType = callType as CALL_TYPE;
         }
         return newConversation;
       });
 
       return newConversationsList;
     });
-    socket?.emit("call", { type, conversationId: conversation.id }, () => {
+    socket?.emit("call", { callType, conversationId: conversation.id }, () => {
       window.open(
-        `${window.location.origin}/call?conversationId=${conversation.id}&type=${type}`,
+        `${window.location.origin}/call?conversationId=${conversation.id}&type=${callType}`,
         "Popup",
         "location,status,scrollbars,resizable,width=600, height=600"
       );

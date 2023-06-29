@@ -164,8 +164,6 @@ export const leaveGroup = async (
       { headers }
     );
 
-    console.log(response);
-
     return response;
   } catch (err) {}
 };
