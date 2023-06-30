@@ -16,6 +16,7 @@ import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import { Socket } from "socket.io-client";
 import UserAvatar from "@/components/UserAvatar";
 import { addUsersToGroup } from "@/api/chat";
+import { IConversation } from "@/interfaces/Conversation";
 
 const AddMember = ({
   open,
@@ -24,6 +25,7 @@ const AddMember = ({
   members,
   setMembers,
   conversationId,
+  conversation,
 }: {
   open: boolean;
   handleClose: any;
@@ -31,6 +33,7 @@ const AddMember = ({
   members: User[];
   setMembers: Function;
   conversationId: string;
+  conversation: IConversation;
 }) => {
   const [groupUsers, setGroupUsers] = useState<User[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -68,6 +71,10 @@ const AddMember = ({
         .then((usersData) => {
           if (usersData) {
             setMembers(usersData);
+            socket?.emit("noti:member-added", {
+              conversation,
+              ids: groupUsers.map((user) => user.id),
+            });
             handleClose();
           }
         })
