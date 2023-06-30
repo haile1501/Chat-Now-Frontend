@@ -18,8 +18,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={manrope.className}>
-        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      <body>
+        <div className={manrope.className}>
+          <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        </div>
       </body>
     </html>
   );

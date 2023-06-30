@@ -24,6 +24,9 @@ import CallingNoti from "@/components/dashboard/calls/CallingNoti";
 import { User } from "@/interfaces/User";
 import Info from "@/components/dashboard/chats/conversation-info/Info";
 import UserAvatar from "@/components/UserAvatar";
+import { UserInfo } from "@/interfaces/UserInfo";
+import { getMyProfile } from "@/api";
+import Menu from "@/components/dashboard/Menu";
 
 const DashBoard = () => {
   const router = useRouter();
@@ -33,13 +36,24 @@ const DashBoard = () => {
     []
   );
   const [socket, setSocket] = useState<Socket>();
+  const [profile, setProfile] = useState<UserInfo>();
   const [open, setOpen] = useState(false);
   const [caller, setCaller] = useState<User>();
   const [callType, setCallType] = useState<CALL_TYPE>(CALL_TYPE.VOICE);
   const [conversationId, setConversationId] = useState<string>("");
   const [openInfo, setOpenInfo] = useState(false);
-
   const handleClose = () => setOpen(false);
+
+  // popover
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const handleClickAvatar = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+  const openMenu = Boolean(anchorEl);
+  const id = openMenu ? "menu-popover" : undefined;
 
   useEffect(() => {
     if (localStorage.getItem(ACCESS_TOKEN)) {
@@ -120,6 +134,15 @@ const DashBoard = () => {
       socket?.off("noti:end-call", handleEndCall);
     };
   }, [socket]);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem(ACCESS_TOKEN);
+    if (accessToken) {
+      getMyProfile(accessToken)
+        .then((data) => setProfile(data))
+        .catch((err) => console.log(err));
+    }
+  }, []);
 
   const handleItemClick = (item: string) => {
     setSelectedItem(item);
@@ -217,9 +240,13 @@ const DashBoard = () => {
                 />
               </SideBarItem>
             </Box>
-            <Box sx={{ mt: "auto", cursor: "pointer", mb: "35%" }}>
+            <Box
+              sx={{ mt: "auto", cursor: "pointer", mb: "35%" }}
+              onClick={handleClickAvatar}
+              aria-describedby={id}
+            >
               <UserAvatar
-                src={chatnow.src}
+                src={profile?.avatar}
                 styles={{
                   width: "3.5rem",
                   height: "3.5rem",
@@ -227,6 +254,14 @@ const DashBoard = () => {
                 }}
               />
             </Box>
+            <Menu
+              setUser={setProfile}
+              user={profile}
+              id={id}
+              openMenu={openMenu}
+              handleCloseMenu={handleCloseMenu}
+              anchorEl={anchorEl}
+            />
           </Box>
         </Grid>
         <Grid item md={2.5} sx={{ backgroundColor: "#f8faff" }} height="100vh">
