@@ -18,6 +18,8 @@ export interface SignUpBody {
 }
 
 export const signUp = (body: SignUpBody) => {
+  console.log(body);
+
   return axios.post(`${BASE_API_URL}/auth/sign-up`, body);
 };
 

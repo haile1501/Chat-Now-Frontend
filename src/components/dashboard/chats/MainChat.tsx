@@ -18,6 +18,8 @@ import CallIcon from "@mui/icons-material/Call";
 import React from "react";
 import SearchMessage from "./SearchMessage";
 import UserAvatar from "@/components/UserAvatar";
+import { createCallHistory } from "@/api/call";
+import { ACCESS_TOKEN } from "@/constants/literals";
 
 const UserStatus = ({ userStatus }: { userStatus: USER_STATUS }) => {
   let text;
@@ -107,6 +109,14 @@ const MainChat = ({
 
       return newConversationsList;
     });
+
+    const accessToken = localStorage.getItem(ACCESS_TOKEN);
+    if (accessToken) {
+      createCallHistory(accessToken, callType as CALL_TYPE, conversation.id)
+        .then((res) => {})
+        .catch((err) => console.log(err));
+    }
+
     socket?.emit(
       "call",
       { type: callType, conversationId: conversation.id },
