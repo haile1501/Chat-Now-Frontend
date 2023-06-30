@@ -1,1 +1,11 @@
-export const ACCESS_TOKEN = "accessToken";
+export const ACCESS_TOKEN = 'accessToken';
+export const API_BASE_URL = 'https://api.example.com';
+export const DEFAULT_AVATAR = '/images/default-avatar.png';
+export const MAX_MESSAGE_LENGTH = 500;
+export const MAX_USERNAME_LENGTH = 20;
+export const MIN_PASSWORD_LENGTH = 6;
+export const ITEMS_PER_PAGE = 10;
+export const DEFAULT_TIMEZONE = 'UTC';
+export const MAX_ATTACHMENT_SIZE = 5242880; // 5MB
+export const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+export const DEFAULT_LANGUAGE = 'en';
