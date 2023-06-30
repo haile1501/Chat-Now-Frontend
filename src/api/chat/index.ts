@@ -24,7 +24,7 @@ export const getConversations = async (accessToken: string) => {
           isMyLastMessage: conversationData.isMyLastMessage,
           timeSend: conversationData.lastMessage?.timeSend,
           senderId: conversationData.lastMessage?.user.userId,
-          avatar: "",
+          avatar: conversationData.avatar,
           conversationName: conversationData.groupName,
           userStatus: USER_STATUS.OFF,
           privateUserId: null,
@@ -34,6 +34,7 @@ export const getConversations = async (accessToken: string) => {
         if (conversation.type === "private") {
           conversation.userStatus = conversationData.member[0].onlineStatus;
           conversation.privateUserId = conversationData.member[0].userId;
+          conversation.avatar = conversationData.member[0].avatar;
         }
 
         if (conversation.lastMessage && conversation.timeSend) {
@@ -184,7 +185,6 @@ export const addUsersToGroup = async (
     );
 
     const data = response.data;
-    console.log(data);
 
     const members: User[] = data.users.map((user: any) => {
       const member: User = {

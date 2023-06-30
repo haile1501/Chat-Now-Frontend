@@ -107,13 +107,17 @@ const MainChat = ({
 
       return newConversationsList;
     });
-    socket?.emit("call", { callType, conversationId: conversation.id }, () => {
-      window.open(
-        `${window.location.origin}/call?conversationId=${conversation.id}&type=${callType}`,
-        "Popup",
-        "location,status,scrollbars,resizable,width=600, height=600"
-      );
-    });
+    socket?.emit(
+      "call",
+      { type: callType, conversationId: conversation.id },
+      () => {
+        window.open(
+          `${window.location.origin}/call?conversationId=${conversation.id}&type=${callType}`,
+          "Popup",
+          "location,status,scrollbars,resizable,width=600, height=600"
+        );
+      }
+    );
   };
 
   const handleJoinCall = (type: string) => {

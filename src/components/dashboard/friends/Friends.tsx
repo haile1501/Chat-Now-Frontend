@@ -9,12 +9,14 @@ import {
   ListItemButton,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import { User } from "@/interfaces/User";
 import UserAvatar from "@/components/UserAvatar";
+import { getFriends } from "@/api/friends";
+import { ACCESS_TOKEN } from "@/constants/literals";
 
 const Friends = ({ socket }: { socket: Socket | undefined }) => {
   const [friends, setFriends] = useState<User[]>([]);
@@ -27,6 +29,17 @@ const Friends = ({ socket }: { socket: Socket | undefined }) => {
   const handleOpenRequests = () => {
     setOpenRequests(true);
   };
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem(ACCESS_TOKEN);
+    if (accessToken) {
+      getFriends(accessToken).then((friendsData: User[] | undefined) => {
+        if (friendsData) {
+          setFriends(friendsData);
+        }
+      });
+    }
+  }, [setFriends]);
 
   return (
     <Box sx={{ height: "100%", color: "black" }}>
