@@ -4,7 +4,7 @@ import { ACCESS_TOKEN } from "@/constants/literals";
 import { IConversation } from "@/interfaces/Conversation";
 import { RELATIONSHIP } from "@/utils/constant";
 import { Box, Typography } from "@mui/material";
-import moment from "moment";
+import { format } from "date-fns";
 import { useState, useEffect } from "react";
 import { Socket } from "socket.io-client";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
@@ -169,7 +169,7 @@ const PrivateUserInfo = ({
             DoB
           </Typography>
           <Typography sx={{ display: "inline-block", width: "40%" }}>
-            {moment(user?.dob).format("DD/MM/YYYY")}
+            {user && format(new Date(user.dob), "dd/MM/yyyy")}
           </Typography>
         </Box>
         <Box>
