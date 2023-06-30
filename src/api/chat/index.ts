@@ -15,6 +15,8 @@ export const getConversations = async (accessToken: string) => {
       }
     );
 
+    console.log(responses.data);
+
     const conversationsList: IConversation[] = responses.data.map(
       (conversationData: any) => {
         const conversation: IConversation = {
@@ -25,7 +27,7 @@ export const getConversations = async (accessToken: string) => {
           timeSend: conversationData.lastMessage?.timeSend,
           senderId: conversationData.lastMessage?.user.userId,
           avatar: conversationData.avatar,
-          conversationName: conversationData.groupName,
+          conversationName: conversationData.groupName || "",
           userStatus: USER_STATUS.OFF,
           privateUserId: null,
           callType: conversationData.callType,
@@ -35,6 +37,7 @@ export const getConversations = async (accessToken: string) => {
           conversation.userStatus = conversationData.member[0].onlineStatus;
           conversation.privateUserId = conversationData.member[0].userId;
           conversation.avatar = conversationData.member[0].avatar;
+          conversation.conversationName = `${conversationData.member[0].firstName} ${conversationData.member[0].lastName}`;
         }
 
         if (conversation.lastMessage && conversation.timeSend) {
@@ -108,7 +111,7 @@ export const createConversation = async (
       timeSend: "",
       senderId: -1,
       avatar: "",
-      conversationName: data.groupName,
+      conversationName: data.groupName || "",
       userStatus: USER_STATUS.OFF,
       privateUserId: null,
       callType: CALL_TYPE.NO,
@@ -116,15 +119,17 @@ export const createConversation = async (
 
     if (conversation.type === "private") {
       const partnerId = userIds[0];
-      const partner = data.member.find(
-        (user: any) => user.userId === partnerId
-      );
+      const partner = data.users.find((user: any) => user.userId === partnerId);
       conversation.userStatus = partner.onlineStatus;
       conversation.privateUserId = partner.userId;
+      conversation.avatar = partner.avatar;
+      conversation.conversationName = `${partner.firstName} ${partner.lastName}`;
     }
 
     return conversation;
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const getConversationMembers = async (

@@ -133,6 +133,7 @@ const MainChat = ({
   const sendMessage = () => {
     if (messageText !== "") {
       let messageId = -1;
+
       socket?.emit(
         "send",
         {

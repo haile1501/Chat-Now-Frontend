@@ -101,7 +101,7 @@ const EditProfile = ({
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: "40vw",
-            height: "27vw",
+            height: "fit-content",
             bgcolor: "white",
             //   border: "2px solid #000",
             //   boxShadow: 24,
@@ -135,10 +135,19 @@ const EditProfile = ({
                 src={updateData.avatar}
                 styles={{ width: "10vw", height: "10vw", m: "auto" }}
               />
-              <AddAPhotoRoundedIcon
-                sx={{ cursor: "pointer", ml: "auto" }}
-                onClick={handleUploadImage}
-              />
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <AddAPhotoRoundedIcon
+                  sx={{ cursor: "pointer", ml: "auto", mr: "20%" }}
+                  onClick={handleUploadImage}
+                />
+              </Box>
+
               <input
                 type="file"
                 id="profile-image-input"
@@ -210,9 +219,10 @@ const EditProfile = ({
                 placeholder="About"
                 style={{
                   width: "100%",
-                  height: "30%",
+                  height: "10vw",
                   backgroundColor: "white",
                   outline: "none",
+                  color: "black",
                 }}
                 value={updateData.about}
                 onChange={handleInputChange}

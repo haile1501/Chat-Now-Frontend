@@ -22,12 +22,22 @@ const Friends = ({ socket }: { socket: Socket | undefined }) => {
   const [friends, setFriends] = useState<User[]>([]);
   const [openFriends, setOpenFriends] = useState(false);
   const handleOpenFriends = () => {
-    setOpenFriends(true);
+    setOpenFriends(!openFriends);
   };
 
   const [openRequests, setOpenRequests] = useState(false);
   const handleOpenRequests = () => {
-    setOpenRequests(true);
+    setOpenRequests(!openRequests);
+  };
+
+  const [openSent, setOpenSent] = useState(false);
+  const handleToggleSent = () => {
+    setOpenSent(!openSent);
+  };
+
+  const [openReceived, setOpenReceived] = useState(false);
+  const handleToggleReceived = () => {
+    setOpenReceived(!openReceived);
   };
 
   useEffect(() => {
@@ -113,16 +123,28 @@ const Friends = ({ socket }: { socket: Socket | undefined }) => {
           unmountOnExit
           sx={{ mt: "0.5rem" }}
         >
-          <List component="div" disablePadding>
-            {friends.map((friend, index) => (
-              <ListItem key={index}>
-                <Box sx={{ display: "flex", gap: "0.75rem" }}>
-                  <UserAvatar src={friend.avatar}></UserAvatar>
-                  <Typography>{`${friend.firstName} ${friend.lastName}`}</Typography>
-                </Box>
-              </ListItem>
-            ))}
-          </List>
+          <ListItemButton onClick={handleToggleReceived}>
+            <Typography sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+              Requests received
+            </Typography>
+            <Box sx={{ ml: "auto" }}>
+              {openReceived ? <ExpandLess /> : <ExpandMore />}
+            </Box>
+          </ListItemButton>
+          <Collapse in={openSent} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding></List>
+          </Collapse>
+          <ListItemButton onClick={handleToggleSent}>
+            <Typography sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+              Requests sent
+            </Typography>
+            <Box sx={{ ml: "auto" }}>
+              {openSent ? <ExpandLess /> : <ExpandMore />}
+            </Box>
+          </ListItemButton>
+          <Collapse in={openReceived} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding></List>
+          </Collapse>
         </Collapse>
       </Box>
     </Box>

@@ -129,6 +129,8 @@ const CreateConversation = ({
 
       createConversation(accessToken, userIds, type, groupName)
         .then((conversationData: IConversation | undefined) => {
+          console.log(conversationData);
+
           if (conversationData) {
             if (
               conversationsList.some(
