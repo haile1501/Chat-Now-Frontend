@@ -1,49 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { Typography, Box } from "@mui/material";
-import { Socket } from "socket.io-client";
-import { CallRecord } from "@/interfaces/CallRecord";
-import CallHistoryItem from "@/components/CallHistoryItem"; 
+import { CallHistory } from "@/interfaces/CallHistory";
+import { Box, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 
-interface CallsHistoryProps {
-  socket: Socket | undefined;
-}
+const CallsHistory = () => {
+  const [calls, setCalls] = useState<CallHistory[]>([]);
 
-const CallsHistory: React.FC<CallsHistoryProps> = ({ socket }) => {
-  const [callRecords, setCallRecords] = useState<CallRecord[]>([]);
-
-  useEffect(() => {
-    if (socket) {
-      // Emit an event to request call history from the server
-      socket.emit("get-call-history", (history: CallRecord[]) => {
-        setCallRecords(history);
-      });
-
-      // Listen for incoming call records
-      socket.on("new-call-record", (record: CallRecord) => {
-        setCallRecords((prevRecords) => [...prevRecords, record]);
-      });
-    }
-
-    return () => {
-      if (socket) {
-        // Clean up socket event listener when component is unmounted
-        socket.off("new-call-record");
-      }
-    };
-  }, [socket]);
+  useEffect(() => {}, []);
 
   return (
-    <Box>
-      <Typography variant="h4">Call History</Typography>
-      {callRecords.length === 0 ? (
-        <Typography>No call history available.</Typography>
-      ) : (
-        <Box sx={{ mt: 2 }}>
-          {callRecords.map((record) => (
-            <CallHistoryItem key={record.id} record={record} />
-          ))}
-        </Box>
-      )}
+    <Box sx={{ height: "100%", color: "black" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          width: "80%",
+          m: "auto",
+          mt: "7.5%",
+        }}
+      >
+        <Typography
+          sx={{
+            fontWeight: "bold",
+            color: "#000000",
+            fontSize: "2rem",
+          }}
+        >
+          Call Logs
+        </Typography>
+      </Box>
     </Box>
   );
 };

@@ -119,6 +119,7 @@ const GroupInfo = ({
       }}
     >
       <AddMember
+        conversation={conversation}
         conversationId={conversation.id}
         setMembers={setMembers}
         members={members}

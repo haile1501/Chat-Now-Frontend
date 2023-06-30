@@ -30,7 +30,6 @@ const Call = ({ socket }: { socket: Socket | undefined }) => {
 
   return (
     <div>
-      <h1 className="heading">Agora RTC NG SDK React Wrapper</h1>
       {inCall && (
         <VideoCall
           setInCall={setInCall}
